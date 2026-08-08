@@ -31,7 +31,7 @@ export function Hero({ onOpenB2B }: HeroProps) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-4xl"
+          className="mx-auto max-w-4xl text-center flex flex-col items-center"
         >
           {/* Live status badge */}
           <div className="mb-6 inline-flex items-center gap-2.5 rounded-full glass px-4 py-2 text-sm">
@@ -52,11 +52,11 @@ export function Hero({ onOpenB2B }: HeroProps) {
 
           <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg text-pretty">
             Unforgettable high-energy gorilla entrances plus a dedicated
-            cameraman for full event photography and cinematic HD videography.
+            crameraman for full event photography and cinematic HD videography.
             Ek hi jagah, complete event media solution.
           </p>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center justify-center w-full sm:w-auto">
             <a
               href={buildGeneralWhatsAppLink('Gorilla Entrance book')}
               target="_blank"
@@ -77,7 +77,7 @@ export function Hero({ onOpenB2B }: HeroProps) {
           </div>
 
           {/* Feature strip */}
-          <div className="mt-12 grid max-w-2xl grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="mt-12 grid max-w-2xl w-full grid-cols-1 gap-3 sm:grid-cols-3">
             {[
               { icon: Sparkles, label: 'High-Energy Entrances' },
               { icon: Camera, label: 'HD Photo + Cinematic Video' },
@@ -85,7 +85,7 @@ export function Hero({ onOpenB2B }: HeroProps) {
             ].map((f) => (
               <div
                 key={f.label}
-                className="flex items-center gap-2.5 rounded-xl glass px-4 py-3"
+                className="flex items-center justify-center gap-2.5 rounded-xl glass px-4 py-3"
               >
                 <f.icon className="h-5 w-5 shrink-0 text-primary" />
                 <span className="text-sm font-medium">{f.label}</span>
