@@ -1,7 +1,13 @@
 'use client'
 
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
 import { VideoPlayer } from '@/components/video-player'
+
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 const CLIPS = [
   { id: 'v1', src: '/v1.mp4' },
@@ -29,17 +35,60 @@ export function VideoGallery() {
         </p>
       </Reveal>
 
-      <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-        {CLIPS.map((clip, i) => (
-          <Reveal key={clip.id} delay={i * 0.06}>
-            <VideoPlayer
-              id={clip.id}
-              src={clip.src}
-              aspect="9/16"
-            />
-          </Reveal>
-        ))}
-      </div>
+      <Reveal delay={0.1} className="relative mt-14">
+        {/* Navigation Arrows for Desktop */}
+        <button
+          id="gallery-prev"
+          aria-label="Previous reel"
+          className="absolute -left-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background sm:flex disabled:opacity-20"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          id="gallery-next"
+          aria-label="Next reel"
+          className="absolute -right-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background sm:flex disabled:opacity-20"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
+
+        {/* Responsive Single Row Slider */}
+        <Swiper
+          modules={[Navigation]}
+          navigation={{
+            prevEl: '#gallery-prev',
+            nextEl: '#gallery-next',
+          }}
+          spaceBetween={16}
+          slidesPerView={1.25}
+          grabCursor={true}
+          breakpoints={{
+            640: {
+              slidesPerView: 2.2,
+              spaceBetween: 20,
+            },
+            1024: {
+              slidesPerView: 3.5,
+              spaceBetween: 24,
+            },
+            1280: {
+              slidesPerView: 4,
+              spaceBetween: 24,
+            },
+          }}
+          className="w-full !overflow-visible"
+        >
+          {CLIPS.map((clip) => (
+            <SwiperSlide key={clip.id} className="h-full">
+              <VideoPlayer
+                id={clip.id}
+                src={clip.src}
+                aspect="9/16"
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Reveal>
     </section>
   )
 }

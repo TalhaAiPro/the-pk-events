@@ -1,4 +1,5 @@
-import { Crown, MapPin, Building2 } from 'lucide-react'
+import Image from 'next/image'
+import { MapPin, Building2 } from 'lucide-react'
 import { CITIES } from '@/lib/site'
 
 export function Footer() {
@@ -9,9 +10,14 @@ export function Footer() {
           {/* Brand Info */}
           <div className="flex flex-col items-center">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
-                <Crown className="h-5 w-5" />
-              </span>
+              <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-primary/15">
+                <Image
+                  src="/logo.png"
+                  alt="The PK Events Logo"
+                  fill
+                  className="object-contain p-1"
+                />
+              </div>
               <span className="text-base font-bold">The PK Events</span>
             </div>
             <p className="mt-4 max-w-xs text-center text-sm leading-relaxed text-muted-foreground text-pretty">
