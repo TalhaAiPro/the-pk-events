@@ -35,8 +35,8 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4">
         <nav
           className={cn(
-            'flex items-center justify-between rounded-2xl px-4 py-3 transition-all duration-300',
-            scrolled ? 'glass-strong' : 'glass',
+            'flex items-center justify-between rounded-2xl px-4 py-3 transition-all duration-300 bg-black/90 text-white backdrop-blur-md border border-white/10',
+            scrolled ? 'shadow-lg shadow-black/50' : '',
           )}
         >
           <a href="#top" className="flex items-center gap-2.5">
@@ -50,7 +50,7 @@ export function Navbar() {
                 priority
               />
             </div>
-            <span className="text-base font-bold tracking-tight">
+            <span className="text-base font-bold tracking-tight text-white">
               The PK Events
             </span>
           </a>
@@ -60,7 +60,7 @@ export function Navbar() {
               <li key={l.href}>
                 <a
                   href={l.href}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  className="text-sm font-medium text-gray-300 transition-colors hover:text-white"
                 >
                   {l.label}
                 </a>
@@ -83,7 +83,7 @@ export function Navbar() {
               type="button"
               onClick={() => setOpen((o) => !o)}
               aria-label="Toggle menu"
-              className="flex h-10 w-10 items-center justify-center rounded-xl glass text-foreground lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white lg:hidden"
             >
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -91,14 +91,14 @@ export function Navbar() {
         </nav>
 
         {open ? (
-          <div className="mt-2 rounded-2xl glass-strong p-4 lg:hidden">
+          <div className="mt-2 rounded-2xl bg-black/95 p-4 border border-white/10 backdrop-blur-md lg:hidden">
             <ul className="flex flex-col gap-1">
               {LINKS.map((l) => (
                 <li key={l.href}>
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+                    className="block rounded-xl px-3 py-2.5 text-sm font-medium text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
                   >
                     {l.label}
                   </a>
