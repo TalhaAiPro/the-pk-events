@@ -21,6 +21,14 @@ export const metadata: Metadata = {
     'mascot booking',
     'The PK Events',
   ],
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     title: 'The PK Events | Giant Gorilla Mascots & Event Media Coverage',
     description:

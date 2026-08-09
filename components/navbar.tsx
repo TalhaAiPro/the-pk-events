@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Crown, Menu, X, MessageCircle } from 'lucide-react'
+import Image from 'next/image'
+import { Menu, X, MessageCircle } from 'lucide-react'
 import { buildGeneralWhatsAppLink } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -39,9 +40,15 @@ export function Navbar() {
           )}
         >
           <a href="#top" className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
-              <Crown className="h-5 w-5" />
-            </span>
+            <div className="relative h-9 w-9 overflow-hidden rounded-xl">
+              <Image
+                src="/logo.png" // Apne logo image ka path yahan rakhein (e.g. public/logo.png)
+                alt="The PK Events Logo"
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
             <span className="text-base font-bold tracking-tight">
               The PK Events
             </span>
