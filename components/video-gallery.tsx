@@ -4,12 +4,14 @@ import { Reveal } from '@/components/reveal'
 import { VideoPlayer } from '@/components/video-player'
 
 const CLIPS = [
-  { src: '/gallery1.mp4', poster: '/gallery-poster-1.png', label: 'Birthday Entrance' },
-  { src: '/gallery2.mp4', poster: '/gallery-poster-2.png', label: 'Wedding Stage' },
-  { src: '/gallery3.mp4', poster: '/gallery-poster-3.png', label: 'Mall Activation' },
-  { src: '/gallery4.mp4', poster: '/gallery-poster-1.png', label: 'Crowd Dance' },
-  { src: '/gallery5.mp4', poster: '/gallery-poster-3.png', label: 'Selfie Session' },
-  { src: '/gallery6.mp4', poster: '/gallery-poster-2.png', label: 'Highlight Reel' },
+  { src: '/v1.mp4', poster: '/gallery-poster-1.png', label: 'Birthday Entrance' },
+  { src: '/v2.mp4', poster: '/gallery-poster-2.png', label: 'Wedding Stage' },
+  { src: '/v3.mp4', poster: '/gallery-poster-3.png', label: 'Mall Activation' },
+  { src: '/v4.mp4', poster: '/gallery-poster-1.png', label: 'Crowd Dance' },
+  { src: '/v5.mp4', poster: '/gallery-poster-3.png', label: 'Selfie Session' },
+  { src: '/v6.mp4', poster: '/gallery-poster-2.png', label: 'Highlight Reel' },
+  { src: '/v7.mp4', poster: '/gallery-poster-1.png', label: 'Event Entry' },
+  { src: '/v8.mp4', poster: '/gallery-poster-3.png', label: 'Mascot Show' },
 ]
 
 export function VideoGallery() {
@@ -28,7 +30,7 @@ export function VideoGallery() {
         </p>
       </Reveal>
 
-      <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {CLIPS.map((clip, i) => (
           <Reveal key={clip.src} delay={i * 0.06}>
             <VideoPlayer
