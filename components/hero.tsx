@@ -11,7 +11,7 @@ type HeroProps = {
 export function Hero({ onOpenB2B }: HeroProps) {
   return (
     <section id="top" className="relative min-h-[100svh] w-full overflow-hidden">
-      {/* Background video with poster fallback */}
+      {/* tBackground video with poster fallback */}
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/hero-gorilla-fleet.mp4"
