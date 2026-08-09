@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import { VideoProvider } from '@/components/video-context'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -50,7 +51,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${jakarta.variable} bg-background`}>
       <body className="font-sans antialiased">
-        {children}
+        <VideoProvider>
+          {children}
+        </VideoProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

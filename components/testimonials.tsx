@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { Reveal } from '@/components/reveal'
 import { VideoPlayer } from '@/components/video-player'
 
@@ -11,21 +10,6 @@ const VIDEO_REVIEWS = [
 ]
 
 export function Testimonials() {
-  // Global sound state (Initial: Muted)
-  const [isGlobalMuted, setIsGlobalMuted] = useState(true)
-
-  // Track active video ID (Initial: null -> all stopped)
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null)
-
-  const toggleGlobalMute = () => {
-    setIsGlobalMuted((prev) => !prev)
-  }
-
-  const handlePlayToggle = (id: string) => {
-    // Stop if active video is tapped again, otherwise start new one and stop remaining
-    setActiveVideoId((prevId) => (prevId === id ? null : id))
-  }
-
   return (
     <section className="relative mx-auto max-w-7xl px-4 py-24">
       <Reveal className="mx-auto max-w-2xl text-center">
@@ -42,12 +26,9 @@ export function Testimonials() {
         {VIDEO_REVIEWS.map((v, i) => (
           <Reveal key={v.id} delay={i * 0.08}>
             <VideoPlayer
+              id={v.id}
               src={v.src}
               aspect="4/5"
-              isPlaying={activeVideoId === v.id}
-              onTogglePlay={() => handlePlayToggle(v.id)}
-              isMuted={isGlobalMuted}
-              onToggleMute={toggleGlobalMute}
             />
           </Reveal>
         ))}

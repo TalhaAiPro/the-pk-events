@@ -3,31 +3,29 @@
 import { useRef, useEffect } from 'react'
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useVideoContext } from '@/components/video-context'
 
 type VideoPlayerProps = {
+  id: string
   src: string
   poster?: string
   className?: string
   aspect?: string
-  isPlaying: boolean
-  onTogglePlay: () => void
-  isMuted: boolean
-  onToggleMute: () => void
 }
 
 export function VideoPlayer({
+  id,
   src,
   poster,
   className,
   aspect = '9/16',
-  isPlaying,
-  onTogglePlay,
-  isMuted,
-  onToggleMute,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const { isGlobalMuted, activeVideoId, toggleGlobalMute, playVideo } = useVideoContext()
 
-  // Synchronize Play/Pause & Auto-Pause when another reel starts
+  const isPlaying = activeVideoId === id
+
+  // Handle Play / Pause logic
   useEffect(() => {
     if (!videoRef.current) return
 
@@ -35,15 +33,16 @@ export function VideoPlayer({
       videoRef.current.play().catch(() => {})
     } else {
       videoRef.current.pause()
+      videoRef.current.currentTime = 0 // Stop hone par initial frame par reset karega
     }
   }, [isPlaying])
 
-  // Synchronize Global Sound State across all videos
+  // Universal Mute / Unmute Sync across all videos
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.muted = isMuted
+      videoRef.current.muted = isGlobalMuted
     }
-  }, [isMuted])
+  }, [isGlobalMuted])
 
   return (
     <div
@@ -52,17 +51,21 @@ export function VideoPlayer({
         className,
       )}
       style={{ aspectRatio: aspect }}
-      onClick={onTogglePlay}
+      onClick={() => playVideo(id)}
     >
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
-        src={`${src}#t=0.001`}
+        src={src}
         poster={poster}
-        muted={isMuted}
+        muted={isGlobalMuted}
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
+        onLoadedMetadata={(e) => {
+          // Instant thumbnail frame render karne ke liye
+          e.currentTarget.currentTime = 0.001
+        }}
       />
 
       {/* Gradient overlay for contrast */}
@@ -86,17 +89,17 @@ export function VideoPlayer({
         </span>
       </div>
 
-      {/* Global Speaker Control Button */}
+      {/* Universal Speaker Control Button */}
       <button
         type="button"
         onClick={(e) => {
-          e.stopPropagation() // Avoids toggling play state when sound button is clicked
-          onToggleMute()
+          e.stopPropagation() // Play/pause state trigger hone se rokega
+          toggleGlobalMute()
         }}
-        aria-label={isMuted ? 'Unmute all videos' : 'Mute all videos'}
+        aria-label={isGlobalMuted ? 'Unmute all videos' : 'Mute all videos'}
         className="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full glass-strong text-foreground transition-colors hover:text-primary"
       >
-        {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+        {isGlobalMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
       </button>
     </div>
   )
