@@ -213,8 +213,9 @@ Please confirm availability and advance deposit details for this date!`;
 
   return (
     <section 
+      id="services"
       ref={sectionRef}
-      className="w-full bg-[#090D16] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative"
+      className="w-full bg-[#090D16] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative scroll-mt-20"
     >
       <div className="max-w-4xl mx-auto w-full space-y-10 text-center">
         
@@ -564,7 +565,7 @@ Please confirm availability and advance deposit details for this date!`;
             </div>
           </div>
 
-          {/* END SECTION: LIVE COST SUMMARY PANEL (Placed at the end on Desktop) */}
+          {/* END SECTION: LIVE COST SUMMARY PANEL */}
           <div className="bg-[#0D131F] border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden text-center max-w-2xl mx-auto">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500" />
 
@@ -620,7 +621,7 @@ Please confirm availability and advance deposit details for this date!`;
         </div>
       </div>
 
-      {/* MOBILE STICKY BOTTOM DRAWER (Only shows when scrolling INSIDE this component section) */}
+      {/* MOBILE STICKY BOTTOM DRAWER */}
       <AnimatePresence>
         {isSectionVisible && (
           <motion.div

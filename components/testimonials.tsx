@@ -17,12 +17,12 @@ const VIDEO_REVIEWS = [
 
 export function Testimonials() {
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-24">
+    <section id="testimonials" className="relative mx-auto max-w-7xl px-4 py-24 scroll-mt-24">
       <Reveal className="mx-auto max-w-2xl text-center">
-        <span className="inline-flex rounded-full bg-primary/12 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
+        <span className="inline-flex rounded-full bg-primary/12 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary">
           Social Proof
         </span>
-        <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">
+        <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-balance sm:text-4xl text-white">
           Trusted By Hundreds Of Happy Clients
         </h2>
       </Reveal>
@@ -33,14 +33,14 @@ export function Testimonials() {
         <button
           id="testimonials-prev"
           aria-label="Previous testimonial"
-          className="absolute -left-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background sm:flex disabled:opacity-20"
+          className="absolute -left-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background hover:scale-105 hover:text-primary sm:flex disabled:opacity-20"
         >
           <ChevronLeft className="h-6 w-6" />
         </button>
         <button
           id="testimonials-next"
           aria-label="Next testimonial"
-          className="absolute -right-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background sm:flex disabled:opacity-20"
+          className="absolute -right-5 top-1/2 z-30 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/90 p-3 text-foreground shadow-2xl backdrop-blur transition hover:bg-background hover:scale-105 hover:text-primary sm:flex disabled:opacity-20"
         >
           <ChevronRight className="h-6 w-6" />
         </button>
@@ -68,7 +68,7 @@ export function Testimonials() {
           className="w-full !overflow-visible"
         >
           {VIDEO_REVIEWS.map((v) => (
-            <SwiperSlide key={v.id} className="h-full">
+            <SwiperSlide key={v.id} className="h-full transition-transform duration-300 hover:scale-[1.02]">
               <VideoPlayer
                 id={v.id}
                 src={v.src}
