@@ -40,12 +40,13 @@ export function Navbar() {
           )}
         >
           <a href="#top" className="flex items-center gap-2.5">
-            <div className="relative h-9 w-9 overflow-hidden rounded-xl">
+            {/* Logo Container with fixed dimensions and clean aspect ratio */}
+            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl">
               <Image
-                src="/logo.png" // Apne logo image ka path yahan rakhein (e.g. public/logo.png)
+                src="/logo.png"
                 alt="The PK Events Logo"
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority
               />
             </div>
