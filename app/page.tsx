@@ -6,7 +6,6 @@ import { Hero } from '@/components/hero'
 import { ServicePackages } from '@/components/service-packages'
 import { B2BHub } from '@/components/b2b-hub'
 import { VideoGallery } from '@/components/video-gallery'
-import { Pricing } from '@/components/pricing'
 import { Testimonials } from '@/components/testimonials'
 import { FAQ } from '@/components/faq'
 import { ClosingBanner } from '@/components/closing-banner'
@@ -24,7 +23,6 @@ export default function Page() {
       <ServicePackages />
       <B2BHub onOpenB2B={openB2B} />
       <VideoGallery />
-      <Pricing />
       <Testimonials />
       <FAQ />
       <ClosingBanner />
