@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, CheckCircle2, Loader2 } from 'lucide-react'
+import { X, CheckCircle2, Loader2, Building2 } from 'lucide-react'
 import { CITIES } from '@/lib/site'
 
-// PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL BELOW to receive leads directly
-// in your Google Sheet. Leave empty to just log submissions to the console.
-const GOOGLE_SCRIPT_URL = ''
+// GOOGLE APPS SCRIPT WEB APP URL
+const GOOGLE_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbwodwdiXG6F0o7zEPk9g8UQJptnioMcDP9t_E_5f2k9gzyy7TdP0ptZrXMimY4Urdh1TQ/exec'
 
 const BUSINESS_TYPES = [
   'Event Planner',
@@ -55,7 +55,6 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
       if (GOOGLE_SCRIPT_URL) {
         await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          // no-cors keeps things simple for Apps Script web apps.
           mode: 'no-cors',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -84,13 +83,14 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          {/* Backdrop with Blur */}
           <div
-            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/80 backdrop-blur-md transition-opacity"
             onClick={reset}
             aria-hidden="true"
           />
@@ -99,48 +99,55 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="b2b-title"
-            className="relative w-full max-w-md rounded-3xl glass-strong p-6 sm:p-8"
-            initial={{ opacity: 0, scale: 0.94, y: 20 }}
+            className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-slate-950/90 p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.94, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
+            {/* Close Button */}
             <button
               type="button"
               onClick={reset}
               aria-label="Close form"
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full glass text-muted-foreground transition-colors hover:text-foreground"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-muted-foreground transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </button>
 
             {status === 'success' ? (
               <div className="flex flex-col items-center py-6 text-center">
-                <CheckCircle2 className="h-14 w-14 text-primary text-glow-emerald" />
-                <h3 className="mt-4 text-xl font-bold">Application Received</h3>
-                <p className="mt-2 text-sm text-muted-foreground text-pretty">
-                  Shukriya! Hamari team 24 ghante mein aap se rabta karegi
-                  partner rates aur commission details ke saath.
+                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/20 text-primary">
+                  <CheckCircle2 className="h-10 w-10" />
+                </span>
+                <h3 className="mt-5 text-2xl font-bold tracking-tight text-foreground">
+                  Application Received
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
+                  Shukriya! Hamari team 24 ghante mein aap se rabta karegi partner rates aur commission details ke saath.
                 </p>
                 <button
                   type="button"
                   onClick={reset}
-                  className="mt-6 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.03]"
+                  className="mt-8 h-12 w-full rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
                 >
                   Done
                 </button>
               </div>
             ) : (
               <>
-                <span className="inline-flex rounded-full bg-accent/15 px-3 py-1 text-xs font-semibold text-accent">
-                  B2B Partner Desk
-                </span>
-                <h3 id="b2b-title" className="mt-3 text-2xl font-bold text-balance">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-300">
+                    <Building2 className="h-3.5 w-3.5" />
+                    B2B Partner Desk
+                  </span>
+                </div>
+
+                <h3 id="b2b-title" className="mt-4 text-2xl font-extrabold tracking-tight text-foreground">
                   Apply as a B2B Partner
                 </h3>
-                <p className="mt-1.5 text-sm text-muted-foreground text-pretty">
-                  Har booking par PKR 3,000 direct cash commission. Form fill
-                  karein, hum aap se rabta karenge.
+                <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+                  Har booking par <strong className="text-amber-400 font-semibold">PKR 3,000 direct cash commission</strong>. Form fill karein, hum aap se rabta karenge.
                 </p>
 
                 <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -164,7 +171,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                     <div>
                       <label
                         htmlFor="city"
-                        className="mb-1.5 block text-xs font-medium text-muted-foreground"
+                        className="mb-1.5 block text-xs font-medium text-foreground/80"
                       >
                         City
                       </label>
@@ -175,13 +182,13 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                         onChange={(e) =>
                           setForm((f) => ({ ...f, city: e.target.value }))
                         }
-                        className="w-full rounded-xl glass px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/60"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
                       >
-                        <option value="" disabled className="bg-popover">
+                        <option value="" disabled className="bg-slate-900 text-foreground">
                           Select
                         </option>
                         {CITIES.map((c) => (
-                          <option key={c} value={c} className="bg-popover">
+                          <option key={c} value={c} className="bg-slate-900 text-foreground">
                             {c}
                           </option>
                         ))}
@@ -191,7 +198,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                     <div>
                       <label
                         htmlFor="businessType"
-                        className="mb-1.5 block text-xs font-medium text-muted-foreground"
+                        className="mb-1.5 block text-xs font-medium text-foreground/80"
                       >
                         Business Type
                       </label>
@@ -205,13 +212,13 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                             businessType: e.target.value,
                           }))
                         }
-                        className="w-full rounded-xl glass px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-primary/60"
+                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
                       >
-                        <option value="" disabled className="bg-popover">
+                        <option value="" disabled className="bg-slate-900 text-foreground">
                           Select
                         </option>
                         {BUSINESS_TYPES.map((b) => (
-                          <option key={b} value={b} className="bg-popover">
+                          <option key={b} value={b} className="bg-slate-900 text-foreground">
                             {b}
                           </option>
                         ))}
@@ -220,7 +227,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                   </div>
 
                   {status === 'error' ? (
-                    <p className="text-sm text-destructive">
+                    <p className="text-xs text-red-400 font-medium">
                       Kuch masla ho gaya. Please dobara koshish karein.
                     </p>
                   ) : null}
@@ -228,15 +235,15 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                   <button
                     type="submit"
                     disabled={status === 'submitting'}
-                    className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:scale-[1.02] disabled:opacity-70"
+                    className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-[0.98] disabled:opacity-70"
                   >
                     {status === 'submitting' ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Submitting
+                        <span>Submitting...</span>
                       </>
                     ) : (
-                      'Submit Application'
+                      <span>Submit Application</span>
                     )}
                   </button>
                 </form>
@@ -268,7 +275,7 @@ function Field({
     <div>
       <label
         htmlFor={id}
-        className="mb-1.5 block text-xs font-medium text-muted-foreground"
+        className="mb-1.5 block text-xs font-medium text-foreground/80"
       >
         {label}
       </label>
@@ -279,7 +286,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl glass px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground/60 focus:ring-2 focus:ring-primary/60"
+        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/50 transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
       />
     </div>
   )
