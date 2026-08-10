@@ -12,7 +12,6 @@ import {
   Sparkles,
   MessageSquare,
   ShieldCheck,
-  CheckCircle2,
 } from 'lucide-react'
 import { CITIES as SITE_CITIES } from '@/lib/site'
 
@@ -88,8 +87,8 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
       return
     }
 
-    // Dynamic High-Converting Pre-Formatted WhatsApp Message
-    const formattedMessage = `🤝 *NEW B2B PARTNER APPLICATION* 🤝\n\n• *Name:* ${form.name.trim()}\n• *Phone:* ${form.phone.trim()}\n• *City:* ${form.city}\n• *Business Type:* ${form.businessType}\n• *Offer:* PKR 3,000 Direct Commission / Booking\n\n*Assalam-o-Alaikum! Main The PK Events ke Official B2B Partner Network ko join karna chahta hun.*`
+    // Dynamic High-Converting Pre-Formatted WhatsApp Message with Elite Hybrid Offer Structure
+    const formattedMessage = `🤝 *NEW B2B PARTNER APPLICATION* 🤝\n\n• *Name:* ${form.name.trim()}\n• *Phone:* ${form.phone.trim()}\n• *City:* ${form.city}\n• *Business Type:* ${form.businessType}\n• *Selected Tier/Offer:* Min. PKR 3,000 or up to 10% Direct Commission / Booking\n\n*Assalam-o-Alaikum! Main The PK Events ke Official B2B Partner Network ko join karna chahta hun.*`
 
     const encodedMessage = encodeURIComponent(formattedMessage)
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`
@@ -126,7 +125,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
             aria-hidden="true"
           />
 
-          {/* Modal Container */}
+          {/* Modal Container optimized for all viewports */}
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -165,7 +164,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
             </h3>
             
             <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">
-              Har booking par <strong className="text-primary font-bold underline decoration-primary/40 underline-offset-4">PKR 3,000 Direct Cash Commission</strong> earning start karein. Simple details fill karke direct WhatsApp connect karein:
+              Har booking par <strong className="text-primary font-bold underline decoration-primary/40 underline-offset-4">Min. PKR 3,000 or up to 10% Direct Commission</strong> earning start karein. Simple details fill karke direct WhatsApp connect karein:
             </p>
 
             {/* Form Inputs */}

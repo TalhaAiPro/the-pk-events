@@ -29,8 +29,9 @@ type B2BHubProps = {
 
 export function B2BHub({ onOpenB2B }: B2BHubProps) {
   return (
-    <section id="b2b" className="relative mx-auto max-w-7xl px-4 py-20 sm:py-24">
+    <section id="b2b" className="relative mx-auto max-w-7xl px-4 py-20 sm:py-24 overflow-hidden">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
+        {/* Left Column: Value Proposition & Call to Action */}
         <Reveal>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 border border-primary/30 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-primary shadow-[0_0_15px_rgba(16,185,129,0.1)]">
@@ -43,10 +44,10 @@ export function B2BHub({ onOpenB2B }: B2BHubProps) {
           </h2>
           
           <p className="mt-4 text-slate-300 text-pretty leading-relaxed text-sm sm:text-base">
-            Planners, venues aur commercial businesses ke liye guaranteed income stream. Aap client refer karein, baqi tamam execution humari responsibility hai.
+            Planners, venues aur commercial businesses ke liye guaranteed high-yield income stream. Aap client refer karein, baqi tamam execution humari responsibility hai.
           </p>
 
-          {/* Highlight Callout Box */}
+          {/* Elite Hybrid Commission Callout Box */}
           <div className="mt-8 rounded-3xl border border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-6 shadow-[0_0_30px_rgba(16,185,129,0.1)] backdrop-blur-sm">
             <div className="flex items-center gap-4">
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/40 bg-primary/20 text-primary shadow-[0_0_20px_rgba(16,185,129,0.2)]">
@@ -54,10 +55,10 @@ export function B2BHub({ onOpenB2B }: B2BHubProps) {
               </span>
               <div>
                 <p className="text-2xl sm:text-3xl font-black text-primary tracking-tight">
-                  PKR 3,000
+                  Min. PKR 3,000 <span className="text-lg sm:text-xl font-bold text-slate-300">or up to 10%</span>
                 </p>
                 <p className="text-xs sm:text-sm font-semibold text-slate-300">
-                  Guaranteed direct cash commission per confirmed booking
+                  Guaranteed direct cash commission per confirmed booking tier
                 </p>
               </div>
             </div>
@@ -67,13 +68,14 @@ export function B2BHub({ onOpenB2B }: B2BHubProps) {
           <button
             type="button"
             onClick={onOpenB2B}
-            className="group mt-8 inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 px-8 py-4 text-base font-extrabold text-slate-950 shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] active:scale-[0.98]"
+            className="group mt-8 inline-flex w-full sm:w-auto items-center justify-center gap-3 rounded-full bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600 px-8 py-4 text-base font-extrabold text-slate-950 shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] active:scale-[0.98]"
           >
             <span>Apply as B2B Partner</span>
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </button>
         </Reveal>
 
+        {/* Right Column: Interactive Category Grid */}
         <Reveal delay={0.1}>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {SEGMENTS.map((s, i) => (
@@ -82,7 +84,6 @@ export function B2BHub({ onOpenB2B }: B2BHubProps) {
                 whileHover={{ y: -5, scale: 1.02 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                 className="group flex flex-col items-start gap-3 rounded-2xl border border-white/10 bg-slate-900/60 p-5 backdrop-blur-xl transition-all duration-300 hover:border-primary/40 hover:bg-slate-900/90 hover:shadow-[0_0_20px_rgba(16,185,129,0.1)]"
-                style={{ transitionDelay: `${i * 40}ms` }}
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                   <s.icon className="h-5 w-5" />
