@@ -22,14 +22,15 @@ function WhatsAppIcon({ className }: { className?: string }) {
 const WHATSAPP_NUMBER = '923396224168'
 
 function getHeaderWhatsAppLink() {
-  const message = "Assalam-o-Alaikum The PK Events! Mujhe apne event ke liye custom package booking aur availability confirm karni hai."
+  const message =
+    'Assalam-o-Alaikum The PK Events! Mujhe apne event ke liye custom package booking aur availability confirm karni hai.'
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`
 }
 
 const LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'B2B Partner Desk', href: '#b2b' },
+  { label: 'Services & Pricing', href: '#services' },
   { label: 'Video Gallery', href: '#gallery' },
+  { label: 'B2B Partner Desk', href: '#b2b' },
   { label: 'Reviews', href: '#testimonials' },
   { label: 'FAQs', href: '#faqs' },
 ]
@@ -49,28 +50,30 @@ export function Navbar() {
     <header
       className={cn(
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        scrolled ? 'py-2' : 'py-4',
+        scrolled ? 'py-2.5' : 'py-4'
       )}
     >
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <nav
           className={cn(
-            'flex items-center justify-between rounded-2xl px-4 py-3 transition-all duration-300 bg-[#090D16]/90 text-white backdrop-blur-md border border-white/10 shadow-2xl',
-            scrolled ? 'shadow-black/70 border-emerald-500/20' : '',
+            'flex items-center justify-between rounded-2xl px-4 py-3 sm:px-5 transition-all duration-300 bg-[#090D16]/85 text-white backdrop-blur-xl border border-white/10 shadow-2xl',
+            scrolled
+              ? 'shadow-black/80 border-emerald-500/30 bg-[#090D16]/95'
+              : 'hover:border-white/20'
           )}
         >
           {/* Brand Logo */}
-          <a href="#top" className="flex items-center gap-2.5 group">
-            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-slate-900 border border-emerald-500/30 p-0.5 transition-transform duration-300 group-hover:scale-105">
+          <a href="#top" className="flex items-center gap-3 group focus:outline-none">
+            <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-slate-900/90 border border-emerald-500/40 p-0.5 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Image
                 src="/logo.png"
                 alt="The PK Events Logo"
                 fill
-                className="object-contain"
+                className="object-contain p-0.5"
                 priority
               />
             </div>
-            <span className="text-base font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
+            <span className="text-base sm:text-lg font-extrabold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
               The PK Events
             </span>
           </a>
@@ -81,7 +84,7 @@ export function Navbar() {
               <li key={l.href}>
                 <a
                   href={l.href}
-                  className="text-sm font-medium text-slate-300 transition-colors hover:text-emerald-400"
+                  className="relative text-sm font-semibold text-slate-300 transition-colors duration-200 hover:text-emerald-400 focus:outline-none"
                 >
                   {l.label}
                 </a>
@@ -89,13 +92,13 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* Desktop WhatsApp CTA Button */}
+          {/* Desktop WhatsApp CTA Button & Mobile Toggle */}
           <div className="flex items-center gap-2">
             <a
               href={getHeaderWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-2.5 rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-bold text-slate-950 transition-all duration-300 hover:bg-emerald-400 hover:scale-[1.04] shadow-lg shadow-emerald-950/50 sm:flex"
+              className="hidden items-center gap-2.5 rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-bold text-slate-950 transition-all duration-300 hover:bg-emerald-400 hover:scale-[1.03] active:scale-95 shadow-lg shadow-emerald-950/60 sm:flex"
             >
               <WhatsAppIcon className="h-4 w-4 fill-slate-950" />
               <span>Book Event Now</span>
@@ -106,23 +109,23 @@ export function Navbar() {
               type="button"
               onClick={() => setOpen((o) => !o)}
               aria-label="Toggle menu"
-              className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white lg:hidden hover:bg-white/15"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white lg:hidden transition-colors hover:bg-white/20 active:scale-95"
             >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {open ? <X className="h-5 w-5 text-emerald-400" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </nav>
 
         {/* Mobile Dropdown Menu */}
         {open ? (
-          <div className="mt-2 rounded-2xl bg-[#090D16]/95 p-4 border border-white/10 backdrop-blur-md lg:hidden shadow-2xl">
-            <ul className="flex flex-col gap-1">
+          <div className="mt-2 rounded-2xl bg-[#090D16]/95 p-4 border border-emerald-500/20 backdrop-blur-2xl lg:hidden shadow-2xl shadow-black/80 animate-in fade-in slide-in-from-top-2 duration-200">
+            <ul className="flex flex-col gap-1.5">
               {LINKS.map((l) => (
                 <li key={l.href}>
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-xl px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-emerald-400"
+                    className="block rounded-xl px-3.5 py-3 text-sm font-semibold text-slate-200 transition-all hover:bg-white/10 hover:text-emerald-400 active:bg-emerald-500/10"
                   >
                     {l.label}
                   </a>
@@ -133,7 +136,8 @@ export function Navbar() {
               href={getHeaderWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 flex items-center justify-center gap-2.5 rounded-full bg-emerald-500 px-5 py-3 text-sm font-bold text-slate-950 transition-all hover:bg-emerald-400"
+              onClick={() => setOpen(false)}
+              className="mt-3 flex items-center justify-center gap-2.5 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-bold text-slate-950 transition-all hover:bg-emerald-400 active:scale-95 shadow-md shadow-emerald-950/50"
             >
               <WhatsAppIcon className="h-4 w-4 fill-slate-950" />
               <span>Book Event Now</span>

@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <main className="relative min-h-screen overflow-x-hidden">
       <Navbar />
-      <Hero onOpenB2B={openB2B} />
+      <Hero />
       <ServicePackages />
       <B2BHub onOpenB2B={openB2B} />
       <VideoGallery />

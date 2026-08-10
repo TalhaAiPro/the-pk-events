@@ -25,29 +25,36 @@ export function VideoPlayer({
 
   const isPlaying = activeVideoId === id
 
-  // Handle Play / Pause logic
+  // Handle Play / Pause logic with native Promise rejection safety
   useEffect(() => {
-    if (!videoRef.current) return
+    const video = videoRef.current
+    if (!video) return
 
     if (isPlaying) {
-      videoRef.current.play().catch(() => {})
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Fallback if browser blocks auto playback
+        })
+      }
     } else {
-      videoRef.current.pause()
-      videoRef.current.currentTime = 0 // Stop hone par initial frame par reset karega
+      video.pause()
+      video.currentTime = 0
     }
   }, [isPlaying])
 
-  // Universal Mute / Unmute Sync across all videos
+  // Universal Mute / Unmute Sync across all videos with direct audio stream unlock
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = isGlobalMuted
+    const video = videoRef.current
+    if (video) {
+      video.muted = isGlobalMuted
     }
   }, [isGlobalMuted])
 
   return (
     <div
       className={cn(
-        'group relative overflow-hidden rounded-2xl glass cursor-pointer select-none',
+        'group relative overflow-hidden rounded-2xl bg-slate-900 cursor-pointer select-none border border-white/10 transition-all duration-300 hover:border-primary/40',
         className,
       )}
       style={{ aspectRatio: aspect }}
@@ -62,42 +69,43 @@ export function VideoPlayer({
         loop
         playsInline
         preload="metadata"
-        onLoadedMetadata={(e) => {
-          // Instant thumbnail frame render karne ke liye
-          e.currentTarget.currentTime = 0.001
-        }}
       />
 
-      {/* Gradient overlay for contrast */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+      {/* Dark Ambient Gradient for High Visual Contrast */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20" />
 
-      {/* Center play/pause overlay */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* Center Play/Pause Animated Indicator */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
         <span
           className={cn(
-            'flex h-14 w-14 items-center justify-center rounded-full glass-strong text-foreground transition-all duration-300',
+            'flex h-14 w-14 items-center justify-center rounded-full border border-white/20 bg-slate-950/70 text-primary backdrop-blur-md transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.2)]',
             isPlaying
-              ? 'scale-90 opacity-0 group-hover:opacity-100'
+              ? 'scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100'
               : 'scale-100 opacity-100',
           )}
         >
           {isPlaying ? (
-            <Pause className="h-6 w-6" />
+            <Pause className="h-6 w-6 text-white" />
           ) : (
-            <Play className="h-6 w-6 translate-x-0.5" />
+            <Play className="h-6 w-6 translate-x-0.5 text-primary fill-primary" />
           )}
         </span>
       </div>
 
-      {/* Universal Speaker Control Button */}
+      {/* Universal Speaker Control Button with Emerald Active State */}
       <button
         type="button"
         onClick={(e) => {
-          e.stopPropagation() // Play/pause state trigger hone se rokega
+          e.stopPropagation() // Prevent video play/pause toggle on sound button tap
           toggleGlobalMute()
         }}
         aria-label={isGlobalMuted ? 'Unmute all videos' : 'Mute all videos'}
-        className="absolute bottom-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full glass-strong text-foreground transition-colors hover:text-primary"
+        className={cn(
+          'absolute bottom-3 right-3 z-20 flex h-10 w-10 items-center justify-center rounded-full border transition-all duration-300 backdrop-blur-md active:scale-90',
+          isGlobalMuted
+            ? 'border-white/20 bg-slate-950/70 text-slate-300 hover:text-white'
+            : 'border-primary/50 bg-emerald-500 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.5)] font-bold',
+        )}
       >
         {isGlobalMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
       </button>

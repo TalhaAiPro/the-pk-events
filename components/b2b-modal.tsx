@@ -2,12 +2,36 @@
 
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, CheckCircle2, Loader2, Building2 } from 'lucide-react'
-import { CITIES } from '@/lib/site'
+import {
+  X,
+  Building2,
+  User,
+  Phone,
+  MapPin,
+  Briefcase,
+  Sparkles,
+  MessageSquare,
+  ShieldCheck,
+  CheckCircle2,
+} from 'lucide-react'
+import { CITIES as SITE_CITIES } from '@/lib/site'
 
-// GOOGLE APPS SCRIPT WEB APP URL
-const GOOGLE_SCRIPT_URL =
-  'https://script.google.com/macros/s/AKfycbwodwdiXG6F0o7zEPk9g8UQJptnioMcDP9t_E_5f2k9gzyy7TdP0ptZrXMimY4Urdh1TQ/exec'
+// Fallback cities array in case import is undefined
+const FALLBACK_CITIES = [
+  'Lahore',
+  'Karachi',
+  'Islamabad',
+  'Rawalpindi',
+  'Faisalabad',
+  'Multan',
+  'Peshawar',
+  'Quetta',
+  'Sialkot',
+  'Gujranwala',
+  'Other',
+]
+
+const CITIES = SITE_CITIES && SITE_CITIES.length > 0 ? SITE_CITIES : FALLBACK_CITIES
 
 const BUSINESS_TYPES = [
   'Event Planner',
@@ -19,15 +43,16 @@ const BUSINESS_TYPES = [
   'Other',
 ]
 
+// TARGET WHATSAPP NUMBER
+const WHATSAPP_NUMBER = '923396224168'
+
 type B2BModalProps = {
   open: boolean
   onClose: () => void
 }
 
-type Status = 'idle' | 'submitting' | 'success' | 'error'
-
 export function B2BModal({ open, onClose }: B2BModalProps) {
-  const [status, setStatus] = useState<Status>('idle')
+  const [errorMessage, setErrorMessage] = useState<string>('')
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -35,7 +60,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
     businessType: '',
   })
 
-  // Lock body scroll while the modal is open.
+  // Lock body scroll while modal is active
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -47,35 +72,38 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
     }
   }, [open])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus('submitting')
+  // Strict Phone Validation Logic for Pakistani Mobile Numbers
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/[\s-]/g, '')
+    const phoneRegex = /^((\+92)|(92)|(0))3\d{9}$/
+    return phoneRegex.test(cleaned)
+  }
 
-    try {
-      if (GOOGLE_SCRIPT_URL) {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...form,
-            submittedAt: new Date().toISOString(),
-          }),
-        })
-      } else {
-        console.log('[v0] B2B lead (add GOOGLE_SCRIPT_URL to save):', form)
-        await new Promise((r) => setTimeout(r, 700))
-      }
-      setStatus('success')
-    } catch (err) {
-      console.log('[v0] B2B submit error:', (err as Error).message)
-      setStatus('error')
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrorMessage('')
+
+    if (!validatePhone(form.phone)) {
+      setErrorMessage('Sahi Pakistani phone number darj karein (e.g., 03001234567)')
+      return
     }
+
+    // Dynamic High-Converting Pre-Formatted WhatsApp Message
+    const formattedMessage = `🤝 *NEW B2B PARTNER APPLICATION* 🤝\n\n• *Name:* ${form.name.trim()}\n• *Phone:* ${form.phone.trim()}\n• *City:* ${form.city}\n• *Business Type:* ${form.businessType}\n• *Offer:* PKR 3,000 Direct Commission / Booking\n\n*Assalam-o-Alaikum! Main The PK Events ke Official B2B Partner Network ko join karna chahta hun.*`
+
+    const encodedMessage = encodeURIComponent(formattedMessage)
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`
+
+    // Instant Direct Redirect to WhatsApp
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+
+    // Reset and Close Modal
+    reset()
   }
 
   const reset = () => {
     setForm({ name: '', phone: '', city: '', businessType: '' })
-    setStatus('idle')
+    setErrorMessage('')
     onClose()
   }
 
@@ -83,172 +111,171 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
     <AnimatePresence>
       {open ? (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* Backdrop with Blur */}
-          <div
-            className="absolute inset-0 bg-background/80 backdrop-blur-md transition-opacity"
+          {/* Backdrop with High-end Blur */}
+          <motion.div
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             onClick={reset}
             aria-hidden="true"
           />
 
+          {/* Modal Container */}
           <motion.div
             role="dialog"
             aria-modal="true"
             aria-labelledby="b2b-title"
-            className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-3xl border border-white/10 bg-slate-950/90 p-6 sm:p-8 shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            className="relative my-auto w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-3xl border border-primary/20 bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-black/95 p-5 sm:p-8 shadow-[0_0_80px_rgba(16,185,129,0.15)] backdrop-blur-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            initial={{ opacity: 0, scale: 0.92, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
+            {/* Top Glow Accent */}
+            <div className="pointer-events-none absolute -top-12 left-1/2 h-24 w-48 -translate-x-1/2 rounded-full bg-primary/20 blur-2xl" />
+
             {/* Close Button */}
             <button
               type="button"
               onClick={reset}
               aria-label="Close form"
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-muted-foreground transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-foreground"
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:text-primary active:scale-95"
             >
               <X className="h-4 w-4" />
             </button>
 
-            {status === 'success' ? (
-              <div className="flex flex-col items-center py-6 text-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/20 text-primary">
-                  <CheckCircle2 className="h-10 w-10" />
-                </span>
-                <h3 className="mt-5 text-2xl font-bold tracking-tight text-foreground">
-                  Application Received
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-                  Shukriya! Hamari team 24 ghante mein aap se rabta karegi partner rates aur commission details ke saath.
-                </p>
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="mt-8 h-12 w-full rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  Done
-                </button>
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-300">
-                    <Building2 className="h-3.5 w-3.5" />
-                    B2B Partner Desk
-                  </span>
+            {/* Header Badges */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                <Building2 className="h-3.5 w-3.5" /> B2B Exclusive Network
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold text-primary">
+                <Sparkles className="h-3 w-3" /> High Yield
+              </span>
+            </div>
+
+            <h3 id="b2b-title" className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Become an Official B2B Partner
+            </h3>
+            
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">
+              Har booking par <strong className="text-primary font-bold underline decoration-primary/40 underline-offset-4">PKR 3,000 Direct Cash Commission</strong> earning start karein. Simple details fill karke direct WhatsApp connect karein:
+            </p>
+
+            {/* Form Inputs */}
+            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <InputField
+                label="Full Name"
+                id="name"
+                icon={User}
+                value={form.name}
+                onChange={(v) => setForm((f) => ({ ...f, name: v }))}
+                placeholder="Enter your name"
+              />
+
+              <InputField
+                label="Phone Number (WhatsApp)"
+                id="phone"
+                type="tel"
+                icon={Phone}
+                value={form.phone}
+                onChange={(v) => setForm((f) => ({ ...f, phone: v }))}
+                placeholder="03XX XXXXXXX"
+              />
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* City Select */}
+                <div>
+                  <label
+                    htmlFor="city"
+                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
+                  >
+                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <span>Select City</span>
+                  </label>
+                  <select
+                    id="city"
+                    required
+                    value={form.city}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, city: e.target.value }))
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
+                  >
+                    <option value="" disabled className="bg-slate-900 text-slate-400">
+                      Select City
+                    </option>
+                    {CITIES.map((c) => (
+                      <option key={c} value={c} className="bg-slate-900 text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
-                <h3 id="b2b-title" className="mt-4 text-2xl font-extrabold tracking-tight text-foreground">
-                  Apply as a B2B Partner
-                </h3>
-                <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-muted-foreground">
-                  Har booking par <strong className="text-amber-400 font-semibold">PKR 3,000 direct cash commission</strong>. Form fill karein, hum aap se rabta karenge.
-                </p>
-
-                <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                  <Field
-                    label="Full Name"
-                    id="name"
-                    value={form.name}
-                    onChange={(v) => setForm((f) => ({ ...f, name: v }))}
-                    placeholder="Your name"
-                  />
-                  <Field
-                    label="Phone Number"
-                    id="phone"
-                    type="tel"
-                    value={form.phone}
-                    onChange={(v) => setForm((f) => ({ ...f, phone: v }))}
-                    placeholder="03XX XXXXXXX"
-                  />
-
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div>
-                      <label
-                        htmlFor="city"
-                        className="mb-1.5 block text-xs font-medium text-foreground/80"
-                      >
-                        City
-                      </label>
-                      <select
-                        id="city"
-                        required
-                        value={form.city}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, city: e.target.value }))
-                        }
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
-                      >
-                        <option value="" disabled className="bg-slate-900 text-foreground">
-                          Select
-                        </option>
-                        {CITIES.map((c) => (
-                          <option key={c} value={c} className="bg-slate-900 text-foreground">
-                            {c}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="businessType"
-                        className="mb-1.5 block text-xs font-medium text-foreground/80"
-                      >
-                        Business Type
-                      </label>
-                      <select
-                        id="businessType"
-                        required
-                        value={form.businessType}
-                        onChange={(e) =>
-                          setForm((f) => ({
-                            ...f,
-                            businessType: e.target.value,
-                          }))
-                        }
-                        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
-                      >
-                        <option value="" disabled className="bg-slate-900 text-foreground">
-                          Select
-                        </option>
-                        {BUSINESS_TYPES.map((b) => (
-                          <option key={b} value={b} className="bg-slate-900 text-foreground">
-                            {b}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {status === 'error' ? (
-                    <p className="text-xs text-red-400 font-medium">
-                      Kuch masla ho gaya. Please dobara koshish karein.
-                    </p>
-                  ) : null}
-
-                  <button
-                    type="submit"
-                    disabled={status === 'submitting'}
-                    className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(16,185,129,0.25)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] active:scale-[0.98] disabled:opacity-70"
+                {/* Business Type Select */}
+                <div>
+                  <label
+                    htmlFor="businessType"
+                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
                   >
-                    {status === 'submitting' ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Submitting...</span>
-                      </>
-                    ) : (
-                      <span>Submit Application</span>
-                    )}
-                  </button>
-                </form>
-              </>
-            )}
+                    <Briefcase className="h-3.5 w-3.5 text-primary" />
+                    <span>Business Type</span>
+                  </label>
+                  <select
+                    id="businessType"
+                    required
+                    value={form.businessType}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        businessType: e.target.value,
+                      }))
+                    }
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
+                  >
+                    <option value="" disabled className="bg-slate-900 text-slate-400">
+                      Select Type
+                    </option>
+                    {BUSINESS_TYPES.map((b) => (
+                      <option key={b} value={b} className="bg-slate-900 text-white">
+                        {b}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {errorMessage ? (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-xl border border-red-500/30 bg-red-500/10 p-2.5 text-center text-xs font-semibold text-red-400"
+                >
+                  {errorMessage}
+                </motion.div>
+              ) : null}
+
+              {/* High-Converting Emerald WhatsApp Button */}
+              <button
+                type="submit"
+                className="group relative mt-3 flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-green-600 px-6 font-extrabold text-white shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:scale-[1.01] hover:from-emerald-400 hover:to-green-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] active:scale-[0.98]"
+              >
+                <MessageSquare className="h-5 w-5 fill-current transition-transform group-hover:scale-110" />
+                <span>Apply Direct on WhatsApp</span>
+              </button>
+
+              <div className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11px] text-slate-400">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                <span>Instant VIP Response & Commission Verification</span>
+              </div>
+            </form>
           </motion.div>
         </motion.div>
       ) : null}
@@ -256,13 +283,14 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
   )
 }
 
-function Field({
+function InputField({
   label,
   id,
   value,
   onChange,
   placeholder,
   type = 'text',
+  icon: Icon,
 }: {
   label: string
   id: string
@@ -270,14 +298,16 @@ function Field({
   onChange: (v: string) => void
   placeholder?: string
   type?: string
+  icon: React.ElementType
 }) {
   return (
     <div>
       <label
         htmlFor={id}
-        className="mb-1.5 block text-xs font-medium text-foreground/80"
+        className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
       >
-        {label}
+        <Icon className="h-3.5 w-3.5 text-primary" />
+        <span>{label}</span>
       </label>
       <input
         id={id}
@@ -286,7 +316,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground/50 transition-all focus:border-primary/60 focus:bg-white/10 focus:ring-1 focus:ring-primary/60"
+        className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-slate-500 transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
       />
     </div>
   )

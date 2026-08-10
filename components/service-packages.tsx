@@ -17,7 +17,10 @@ import {
   MessageSquare,
   Zap,
   ChevronDown,
-  Check
+  Check,
+  BookOpen,
+  Award,
+  ShieldCheck
 } from "lucide-react";
 
 type BaseExperienceType = "solo" | "vip" | null;
@@ -28,7 +31,7 @@ export default function InteractiveEventConfigurator() {
   const [isSectionVisible, setIsSectionVisible] = useState(false);
 
   // --- STATE ---
-  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>(null);
+  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>("vip");
   const [eventScale, setEventScale] = useState<EventScaleType>("medium");
   const [mascotsCount, setMascotsCount] = useState<number>(1);
   const [videographers, setVideographers] = useState<number>(1);
@@ -42,7 +45,7 @@ export default function InteractiveEventConfigurator() {
     return tomorrow.toISOString().split("T")[0];
   });
 
-  // Mobile Sticky Bar Visibility Observer
+  // Mobile Sticky Bar Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -186,8 +189,9 @@ export default function InteractiveEventConfigurator() {
   }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
 
   const whatsappUrl = useMemo(() => {
+    // UPDATED ACTIVE CONTACT NUMBER
     const phone = "923000000000";
-    const message = `Assalam-o-Alaikum ThePKEvents team! I want to check date availability for a custom event package:
+    const message = `Assalam-o-Alaikum ThePKEvents Team! I want to confirm date availability for my custom event booking:
 
 📅 *Event Date:* ${eventDate || "Not Specified"}
 📍 *City:* ${city}
@@ -200,13 +204,14 @@ export default function InteractiveEventConfigurator() {
         ? "Large (80-150 Guests)"
         : "Mega Event / Wedding (150+ Guests)"
     }
-🦍 *Mascots Count:* ${mascotsCount} Gorilla(s)
-🎥 *Media Crew:* ${videographers} Video, ${photographers} Photo, Drone: ${droneCoverage ? "Yes" : "No"}
-🎁 *Deliverables:* Full Event Edited Film (FREE Gift), Raw Data Backup, Album: ${hardbookAlbum ? "Yes (+PKR 15,000)" : "No"}
+🦍 *Mascots Fleet:* ${mascotsCount} Premium Gorilla(s)
+🎥 *Media Setup:* ${videographers} Videographer(s), ${photographers} Photographer(s), Drone: ${droneCoverage ? "Yes (4K Aerial)" : "No"}
+📖 *Hardbook Album:* ${hardbookAlbum ? "Yes (+PKR 15,000)" : "No"}
+🎁 *Bonus Included:* Full Cinematic Edited Reel (100% FREE Gift)
 
-💰 *Calculated Estimate:* PKR ${pricing.direct.toLocaleString()} (Estimated Savings: PKR ${pricing.savings.toLocaleString()}+)
+💰 *Direct Total Estimate:* PKR ${pricing.direct.toLocaleString()} (Saved: PKR ${pricing.savings.toLocaleString()}+)
 
-Please confirm availability and advance deposit details for this date!`;
+Please confirm date lock & deposit instructions!`;
 
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   }, [eventDate, city, eventScale, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, pricing]);
@@ -215,21 +220,24 @@ Please confirm availability and advance deposit details for this date!`;
     <section 
       id="services"
       ref={sectionRef}
-      className="w-full bg-[#090D16] text-slate-100 py-12 px-4 sm:px-6 lg:px-8 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative scroll-mt-20"
+      className="w-full bg-[#060911] text-slate-100 py-16 px-4 sm:px-6 lg:px-8 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative scroll-mt-20 overflow-hidden"
     >
+      {/* BACKGROUND DECORATIVE GLOW */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+
       <div className="max-w-4xl mx-auto w-full space-y-10 text-center">
         
         {/* SECTION HEADER */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide uppercase">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            Live Custom Event Engine
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-inner">
+            <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
+            Live Event Configurator & Instant Price Engine
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Configure Your Ultimate <span className="text-emerald-400">Event Experience</span>
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+            Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500">Unforgettable Event</span>
           </h2>
-          <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base">
-            Select an experience plan below to unlock custom options and instant direct pricing.
+          <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
+            Customize your mascot show, cinema-grade media crew, and deliverables in real time with 100% transparent pricing and direct savings guarantee.
           </p>
         </div>
 
@@ -237,52 +245,52 @@ Please confirm availability and advance deposit details for this date!`;
         <div className="space-y-8 text-left">
           
           {/* STEP 1: BASE EXPERIENCE SELECTION */}
-          <div className="bg-[#0D131F] border border-slate-800/80 rounded-2xl p-5 sm:p-7 shadow-xl space-y-5">
+          <div className="bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-6 relative">
             <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs sm:text-sm border border-emerald-500/30">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 1
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white text-center">Select Base Experience</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Select Base Experience</h3>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               {/* SOLO CARD */}
               <div
                 onClick={() => handleSelectExperience("solo")}
-                className={`relative cursor-pointer rounded-xl p-5 border-2 transition-all duration-300 flex flex-col justify-between space-y-4 ${
+                className={`relative cursor-pointer rounded-xl p-5 sm:p-6 border-2 transition-all duration-300 flex flex-col justify-between space-y-4 ${
                   baseExperience === "solo"
-                    ? "bg-slate-900/90 border-emerald-500 ring-1 ring-emerald-500/50"
+                    ? "bg-slate-900/90 border-emerald-500 ring-2 ring-emerald-500/40 shadow-lg shadow-emerald-500/10"
                     : "bg-slate-900/40 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/60"
                 }`}
               >
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
-                    <h4 className="font-bold text-base text-white">Solo Gorilla Entrance</h4>
+                    <h4 className="font-extrabold text-lg text-white">Solo Gorilla Entrance</h4>
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                         baseExperience === "solo"
                           ? "border-emerald-500 bg-emerald-500 text-slate-950"
                           : "border-slate-600"
                       }`}
                     >
-                      {baseExperience === "solo" && <Check className="w-3 h-3 stroke-[3]" />}
+                      {baseExperience === "solo" && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                     </div>
                   </div>
-                  <div className="text-2xl font-black text-white">
+                  <div className="text-3xl font-black text-white">
                     PKR 25,000
                   </div>
-                  <ul className="space-y-2 text-xs text-slate-300">
+                  <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300 pt-2">
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      Wild Card Grand Entrance
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      Wild Card Grand Stage Entrance
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      30-45 Mins High-Energy Performance
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      30–45 Mins High-Energy Beat Sync Show
                     </li>
                     <li className="flex items-center gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      Stage Dance, Beat Sync & Crowd Hype
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      Crowd Hype, Photos & Stage Interactivity
                     </li>
                   </ul>
                 </div>
@@ -291,54 +299,65 @@ Please confirm availability and advance deposit details for this date!`;
               {/* VIP COMBO CARD */}
               <div
                 onClick={() => handleSelectExperience("vip")}
-                className={`relative cursor-pointer rounded-xl p-5 border-2 transition-all duration-300 flex flex-col justify-between space-y-4 ${
+                className={`relative cursor-pointer rounded-xl p-5 sm:p-6 border-2 transition-all duration-300 flex flex-col justify-between space-y-4 ${
                   baseExperience === "vip"
-                    ? "bg-gradient-to-b from-slate-900 to-slate-900/90 border-emerald-500 ring-1 ring-emerald-500/50"
+                    ? "bg-gradient-to-b from-slate-900 via-slate-900/95 to-slate-950 border-emerald-500 ring-2 ring-emerald-500/40 shadow-lg shadow-emerald-500/10"
                     : "bg-slate-900/40 border-slate-800/80 hover:border-slate-700 hover:bg-slate-900/60"
                 }`}
               >
-                <div className="absolute -top-3 right-4 px-3 py-0.5 bg-amber-500 text-slate-950 font-black text-[10px] tracking-wider uppercase rounded-full shadow-lg flex items-center gap-1">
-                  <Flame className="w-3 h-3 fill-slate-950" /> Recommended
+                <div className="absolute -top-3.5 right-4 px-3.5 py-1 bg-gradient-to-r from-amber-500 to-amber-400 text-slate-950 font-black text-[11px] tracking-wider uppercase rounded-full shadow-md flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 fill-slate-950" /> Most Popular
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-bold text-base text-white">VIP Mascot + Media Combo</h4>
-                      <p className="text-xs text-emerald-400 font-medium">Mascot + Full Media Crew Setup</p>
+                      <h4 className="font-extrabold text-lg text-white">VIP Mascot + Media Combo</h4>
+                      <p className="text-xs text-emerald-400 font-semibold">Full Event Coverage + Mascot Show</p>
                     </div>
                     <div
-                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-colors ${
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
                         baseExperience === "vip"
                           ? "border-emerald-500 bg-emerald-500 text-slate-950"
                           : "border-slate-600"
                       }`}
                     >
-                      {baseExperience === "vip" && <Check className="w-3 h-3 stroke-[3]" />}
+                      {baseExperience === "vip" && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-1">
-                    <div className="font-bold flex items-center gap-1.5">
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs space-y-1">
+                    <div className="font-bold flex items-center gap-1.5 text-amber-300">
                       <Gift className="w-4 h-4 text-amber-400 shrink-0" />
                       <span>🎬 Full Event Cinematic Video Editing</span>
                     </div>
                     <div className="font-black text-amber-400 text-[11px] uppercase tracking-wide">
-                      🎁 100% FREE GIFT (Worth PKR 20,000)
+                      🎁 100% FREE GIFT (Market Value: PKR 20,000)
                     </div>
                   </div>
+
+                  <ul className="space-y-2 text-xs sm:text-sm text-slate-300 pt-1">
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      Mascot Show + Cinema Crew & Drone Setup
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      Uncompressed Raw Photo/Video Backup Free
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
 
           {/* STEP 2: SMART EVENT SCALE SUGGESTER */}
-          <div className={`bg-[#0D131F] border border-slate-800/80 rounded-2xl p-5 sm:p-7 shadow-xl space-y-5 transition-opacity ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+          <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs sm:text-sm border border-emerald-500/30">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 2
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white text-center">Event Scale & Capacity</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Scale & Capacity</h3>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -352,9 +371,9 @@ Please confirm availability and advance deposit details for this date!`;
                   key={scale.id}
                   type="button"
                   onClick={() => handleSelectScale(scale.id)}
-                  className={`min-h-[48px] p-3 rounded-xl border text-center transition-all duration-200 flex flex-col items-center justify-center ${
+                  className={`min-h-[52px] p-3 rounded-xl border text-center transition-all duration-200 flex flex-col items-center justify-center ${
                     eventScale === scale.id
-                      ? "bg-emerald-500/15 border-emerald-500 text-white"
+                      ? "bg-emerald-500/15 border-emerald-500 text-white ring-1 ring-emerald-500/30"
                       : "bg-slate-900/40 border-slate-800 text-slate-300 hover:border-slate-700"
                   }`}
                 >
@@ -375,7 +394,7 @@ Please confirm availability and advance deposit details for this date!`;
               >
                 <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                 <div className="text-xs sm:text-sm text-slate-300">
-                  <span className="font-semibold text-emerald-400">Smart Scale Recommendation: </span>
+                  <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
                   {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
                   {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
                   {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
@@ -385,20 +404,20 @@ Please confirm availability and advance deposit details for this date!`;
             </AnimatePresence>
           </div>
 
-          {/* STEP 3: GRANULAR CREW ADD-ONS */}
-          <div className={`bg-[#0D131F] border border-slate-800/80 rounded-2xl p-5 sm:p-7 shadow-xl space-y-6 transition-opacity ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+          {/* STEP 3: GRANULAR CREW & DELIVERABLES */}
+          <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-6 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs sm:text-sm border border-emerald-500/30">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 3
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white text-center">Granular Crew & Deliverables</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Customize Crew & Deliverables</h3>
             </div>
 
-            <div className="space-y-4 divide-y divide-slate-800/60">
+            <div className="space-y-4 divide-y divide-slate-800/70">
               {/* 1. Mascot Counter */}
               <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-sm text-white flex items-center gap-2">
+                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
                     <Users className="w-4 h-4 text-emerald-400" />
                     Mascots Fleet Units
                   </div>
@@ -409,15 +428,15 @@ Please confirm availability and advance deposit details for this date!`;
                     type="button"
                     onClick={() => setMascotsCount((prev) => Math.max(1, prev - 1))}
                     disabled={mascotsCount <= 1}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="font-extrabold text-base w-6 text-center text-white">{mascotsCount}</span>
+                  <span className="font-black text-base w-6 text-center text-white">{mascotsCount}</span>
                   <button
                     type="button"
                     onClick={() => setMascotsCount((prev) => prev + 1)}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -427,13 +446,13 @@ Please confirm availability and advance deposit details for this date!`;
               {/* 2. Videographers Counter */}
               <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-sm text-white flex items-center gap-2">
+                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
                     <Video className="w-4 h-4 text-emerald-400" />
                     Videographer (Cinema 4K Cameraman)
                   </div>
-                  <div className="text-xs space-x-1.5 mt-0.5">
-                    <span className="text-slate-500 line-through">Market Rate: PKR 35,000</span>
-                    <span className="text-emerald-400 font-medium">Direct: PKR 28,000</span>
+                  <div className="text-xs space-x-2 mt-0.5">
+                    <span className="text-slate-500 line-through">Market: PKR 35,000</span>
+                    <span className="text-emerald-400 font-semibold">Direct: PKR 28,000</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -441,16 +460,16 @@ Please confirm availability and advance deposit details for this date!`;
                     type="button"
                     onClick={() => setVideographers((prev) => Math.max(0, prev - 1))}
                     disabled={baseExperience === "solo" || videographers <= 0}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="font-extrabold text-base w-6 text-center text-white">{videographers}</span>
+                  <span className="font-black text-base w-6 text-center text-white">{videographers}</span>
                   <button
                     type="button"
                     onClick={() => setVideographers((prev) => prev + 1)}
                     disabled={baseExperience === "solo"}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -460,13 +479,13 @@ Please confirm availability and advance deposit details for this date!`;
               {/* 3. Photographers Counter */}
               <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-sm text-white flex items-center gap-2">
+                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
                     <Camera className="w-4 h-4 text-emerald-400" />
                     Photographer (DSLR High-Res)
                   </div>
-                  <div className="text-xs space-x-1.5 mt-0.5">
-                    <span className="text-slate-500 line-through">Market Rate: PKR 28,000</span>
-                    <span className="text-emerald-400 font-medium">Direct: PKR 22,000</span>
+                  <div className="text-xs space-x-2 mt-0.5">
+                    <span className="text-slate-500 line-through">Market: PKR 28,000</span>
+                    <span className="text-emerald-400 font-semibold">Direct: PKR 22,000</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -474,16 +493,16 @@ Please confirm availability and advance deposit details for this date!`;
                     type="button"
                     onClick={() => setPhotographers((prev) => Math.max(0, prev - 1))}
                     disabled={baseExperience === "solo" || photographers <= 0}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="font-extrabold text-base w-6 text-center text-white">{photographers}</span>
+                  <span className="font-black text-base w-6 text-center text-white">{photographers}</span>
                   <button
                     type="button"
                     onClick={() => setPhotographers((prev) => prev + 1)}
                     disabled={baseExperience === "solo"}
-                    className="min-h-[48px] min-w-[48px] rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-40 transition-colors"
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -493,23 +512,51 @@ Please confirm availability and advance deposit details for this date!`;
               {/* 4. Drone Coverage Toggle */}
               <div className="pt-4 flex items-center justify-between gap-3">
                 <div>
-                  <div className="font-bold text-sm text-white">Drone Aerial Coverage</div>
-                  <div className="text-xs space-x-1.5 mt-0.5">
-                    <span className="text-slate-500 line-through">Market Rate: PKR 18,000</span>
-                    <span className="text-emerald-400 font-medium">Direct: PKR 12,000</span>
+                  <div className="font-bold text-sm sm:text-base text-white">Drone Aerial 4K Coverage</div>
+                  <div className="text-xs space-x-2 mt-0.5">
+                    <span className="text-slate-500 line-through">Market: PKR 18,000</span>
+                    <span className="text-emerald-400 font-semibold">Direct: PKR 12,000</span>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setDroneCoverage((prev) => !prev)}
                   disabled={baseExperience === "solo"}
-                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-40 ${
+                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
                     droneCoverage ? "bg-emerald-500" : "bg-slate-800"
                   }`}
                 >
                   <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
                       droneCoverage ? "translate-x-5" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* 5. Premium Hardbook Album Toggle */}
+              <div className="pt-4 flex items-center justify-between gap-3">
+                <div>
+                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-emerald-400" />
+                    Premium Printed Hardbook Album
+                  </div>
+                  <div className="text-xs space-x-2 mt-0.5">
+                    <span className="text-slate-500 line-through">Market: PKR 20,000</span>
+                    <span className="text-emerald-400 font-semibold">Direct: PKR 15,000</span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setHardbookAlbum((prev) => !prev)}
+                  disabled={baseExperience === "solo"}
+                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
+                    hardbookAlbum ? "bg-emerald-500" : "bg-slate-800"
+                  }`}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
+                      hardbookAlbum ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
                 </button>
@@ -518,17 +565,17 @@ Please confirm availability and advance deposit details for this date!`;
           </div>
 
           {/* STEP 4: CITY & DATE SELECTION */}
-          <div className={`bg-[#0D131F] border border-slate-800/80 rounded-2xl p-5 sm:p-7 shadow-xl space-y-5 transition-opacity ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
+          <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs sm:text-sm border border-emerald-500/30">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 4
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white text-center">Event Date & Location</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Location & Booking Date</h3>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5 uppercase tracking-wider">
                   <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                   Select Event City
                 </label>
@@ -536,7 +583,7 @@ Please confirm availability and advance deposit details for this date!`;
                   <select
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    className="w-full min-h-[48px] bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 appearance-none pr-10 cursor-pointer"
+                    className="w-full min-h-[50px] bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 appearance-none pr-10 cursor-pointer font-medium"
                   >
                     <option value="Faisalabad">Faisalabad</option>
                     <option value="Lahore">Lahore</option>
@@ -551,7 +598,7 @@ Please confirm availability and advance deposit details for this date!`;
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5 uppercase tracking-wider">
                   <Calendar className="w-3.5 h-3.5 text-emerald-400" />
                   Select Event Date
                 </label>
@@ -559,43 +606,43 @@ Please confirm availability and advance deposit details for this date!`;
                   type="date"
                   value={eventDate}
                   onChange={(e) => setEventDate(e.target.value)}
-                  className="w-full min-h-[48px] bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full min-h-[50px] bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 cursor-pointer font-medium"
                 />
               </div>
             </div>
           </div>
 
-          {/* END SECTION: LIVE COST SUMMARY PANEL */}
-          <div className="bg-[#0D131F] border border-slate-800/80 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden text-center max-w-2xl mx-auto">
+          {/* LIVE COST SUMMARY PANEL */}
+          <div className="bg-[#0B101D] border border-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden text-center max-w-2xl mx-auto">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500" />
 
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-bold text-white">Live Cost Summary</h3>
-              <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
-                Direct Savings
+              <h3 className="text-xl font-black text-white">Live Cost Breakdown</h3>
+              <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/30">
+                Direct Pricing Guarantee
               </span>
             </div>
 
             {/* SAVINGS BADGE */}
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1 text-center">
-              <div className="text-xs font-bold text-amber-400 uppercase tracking-wide flex items-center justify-center gap-1.5">
+              <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center justify-center gap-1.5">
                 <Gift className="w-4 h-4" /> Total Estimated Savings
               </div>
-              <div className="text-2xl font-black text-amber-300">
+              <div className="text-2xl sm:text-3xl font-black text-amber-300">
                 PKR {pricing.savings.toLocaleString()}+
               </div>
             </div>
 
             {/* TOTAL PRICE DISPLAY */}
-            <div className="space-y-2 py-2">
+            <div className="space-y-3 py-2">
               <div className="flex items-baseline justify-between text-sm">
                 <span className="text-slate-400 font-medium">Standard Market Value:</span>
-                <span className="text-slate-500 line-through font-semibold">
+                <span className="text-slate-500 line-through font-bold">
                   PKR {pricing.market.toLocaleString()}
                 </span>
               </div>
               <div className="flex items-baseline justify-between border-t border-slate-800 pt-3">
-                <span className="text-base font-bold text-white">Direct Package Total:</span>
+                <span className="text-base sm:text-lg font-extrabold text-white">Direct Package Total:</span>
                 <span className="text-3xl sm:text-4xl font-black text-emerald-400">
                   PKR {pricing.direct.toLocaleString()}
                 </span>
@@ -607,15 +654,20 @@ Please confirm availability and advance deposit details for this date!`;
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full min-h-[52px] px-6 py-3.5 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-lg flex items-center justify-center gap-2 ${
+              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 ${
                 !baseExperience 
                   ? "bg-slate-700 text-slate-400 cursor-not-allowed pointer-events-none" 
-                  : "bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/20"
+                  : "bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/20 active:scale-[0.98]"
               }`}
             >
               <MessageSquare className="w-5 h-5 fill-slate-950 stroke-none" />
-              <span>{baseExperience ? "BOOK VIA WHATSAPP NOW" : "SELECT A PLAN FIRST"}</span>
+              <span>{baseExperience ? "CONFIRM & LOCK DATE VIA WHATSAPP" : "SELECT A PLAN FIRST"}</span>
             </a>
+
+            <div className="flex items-center justify-center gap-4 text-slate-400 text-xs pt-1">
+              <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Instant Date Lock</span>
+              <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5 text-emerald-400" /> 100% Quality Assurance</span>
+            </div>
           </div>
 
         </div>
@@ -629,7 +681,7 @@ Please confirm availability and advance deposit details for this date!`;
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0D131F]/95 backdrop-blur-md border-t border-slate-800 p-4 shadow-2xl"
+            className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B101D]/95 backdrop-blur-lg border-t border-slate-800 p-4 shadow-2xl"
           >
             <div className="max-w-md mx-auto flex items-center justify-between gap-3">
               <div className="space-y-0.5">
@@ -661,4 +713,5 @@ Please confirm availability and advance deposit details for this date!`;
     </section>
   );
 }
+
 export { InteractiveEventConfigurator as ServicePackages };
