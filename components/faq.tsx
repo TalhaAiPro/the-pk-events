@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 const FAQS = [
   {
-    q: 'Booking ka tareeqa car kya hai aur kitna time lagta hai?',
+    q: 'Booking ka areeqa car kya hai aur kitna time lagta hai?',
     a: 'Bahut asaan! Screen par diye gaye WhatsApp button par click karein, apni event date aur city batayein. Hamari team aapko instant packages bhej degi aur aapki booking minutes mein confirm kar degi.',
   },
   {
