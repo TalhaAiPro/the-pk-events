@@ -24,7 +24,7 @@ import {
 type BaseExperienceType = "solo" | "vip" | null;
 type EventScaleType = "intimate" | "medium" | "large" | "mega" | null;
 
-export default function InteractiveEventConfigurator() {
+export function ServicePackages() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
 
@@ -669,3 +669,5 @@ Please confirm date lock & deposit instructions!`;
     </section>
   );
 }
+
+export default ServicePackages;
