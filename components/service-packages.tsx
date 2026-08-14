@@ -14,13 +14,10 @@ import {
   Gift,
   Calendar,
   MapPin,
-  MessageCircle,
   Zap,
   ChevronDown,
   Check,
-  BookOpen,
-  Award,
-  ShieldCheck
+  BookOpen
 } from "lucide-react";
 
 type BaseExperienceType = "solo" | "vip" | null;
@@ -28,9 +25,9 @@ type EventScaleType = "intimate" | "medium" | "large" | "mega" | null;
 
 export default function InteractiveEventConfigurator() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [isSectionVisible, setIsSectionVisible] = useState(false);
+  const [, setIsSectionVisible] = useState(false);
 
-  // --- STATE (INITIALIZED TO UNSELECTED / ZERO) ---
+  // --- STATE ---
   const [baseExperience, setBaseExperience] = useState<BaseExperienceType>(null);
   const [eventScale, setEventScale] = useState<EventScaleType>(null);
   const [mascotsCount, setMascotsCount] = useState<number>(0);
@@ -41,7 +38,6 @@ export default function InteractiveEventConfigurator() {
   const [city, setCity] = useState<string>("Faisalabad");
   const [eventDate, setEventDate] = useState<string>("");
 
-  // Mobile Sticky Bar Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -82,6 +78,7 @@ export default function InteractiveEventConfigurator() {
     hardbook: 15000,
   };
 
+  // --- HANDLERS (FIXED LOGIC) ---
   const handleSelectExperience = (type: BaseExperienceType) => {
     setBaseExperience(type);
     if (type === "solo") {
@@ -90,12 +87,13 @@ export default function InteractiveEventConfigurator() {
       setPhotographers(0);
       setDroneCoverage(false);
       setHardbookAlbum(false);
+      setEventScale(null);
     } else if (type === "vip") {
       setMascotsCount(1);
       setVideographers(1);
       setPhotographers(1);
       setDroneCoverage(true);
-      if (!eventScale) setEventScale("medium");
+      setEventScale("medium");
     }
   };
 
@@ -131,7 +129,7 @@ export default function InteractiveEventConfigurator() {
     }
   };
 
-  // --- CALCULATIONS ---
+  // --- PRICING CALCULATION ENGINE ---
   const pricing = useMemo(() => {
     if (!baseExperience) {
       return { direct: 0, market: 0, savings: 0 };
@@ -186,7 +184,6 @@ export default function InteractiveEventConfigurator() {
   }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
 
   const whatsappUrl = useMemo(() => {
-    // UPDATED ACTIVE CONTACT NUMBER
     const phone = "923396224168";
     const message = `Assalam-o-Alaikum ThePKEvents Team! I want to confirm date availability for my custom event booking:
 
@@ -221,12 +218,11 @@ Please confirm date lock & deposit instructions!`;
       ref={sectionRef}
       className="w-full bg-[#060911] text-slate-100 py-16 px-4 sm:px-6 lg:px-8 font-sans antialiased min-h-screen flex flex-col items-center justify-center relative scroll-mt-20 overflow-hidden"
     >
-      {/* BACKGROUND DECORATIVE GLOW */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
       <div className="max-w-4xl mx-auto w-full space-y-10 text-center">
         
-        {/* SECTION HEADER */}
+        {/* HEADER */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-inner">
             <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
@@ -240,7 +236,6 @@ Please confirm date lock & deposit instructions!`;
           </p>
         </div>
 
-        {/* CENTER ALIGNED FORM CONTAINERS */}
         <div className="space-y-8 text-left">
           
           {/* STEP 1: BASE EXPERIENCE SELECTION */}
@@ -350,7 +345,7 @@ Please confirm date lock & deposit instructions!`;
             </div>
           </div>
 
-          {/* STEP 2: SMART EVENT SCALE SUGGESTER */}
+          {/* STEP 2: EVENT SCALE */}
           <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
@@ -405,7 +400,7 @@ Please confirm date lock & deposit instructions!`;
             </AnimatePresence>
           </div>
 
-          {/* STEP 3: GRANULAR CREW & DELIVERABLES */}
+          {/* STEP 3: CREW & DELIVERABLES */}
           <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-6 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
@@ -415,7 +410,7 @@ Please confirm date lock & deposit instructions!`;
             </div>
 
             <div className="space-y-4 divide-y divide-slate-800/70">
-              {/* 1. Mascot Counter */}
+              {/* Mascots Counter */}
               <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
@@ -445,7 +440,7 @@ Please confirm date lock & deposit instructions!`;
                 </div>
               </div>
 
-              {/* 2. Videographers Counter */}
+              {/* Videographers Counter */}
               <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
@@ -478,7 +473,7 @@ Please confirm date lock & deposit instructions!`;
                 </div>
               </div>
 
-              {/* 3. Photographers Counter */}
+              {/* Photographers Counter */}
               <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
@@ -511,7 +506,7 @@ Please confirm date lock & deposit instructions!`;
                 </div>
               </div>
 
-              {/* 4. Drone Coverage Toggle */}
+              {/* Drone Toggle */}
               <div className="pt-4 flex items-center justify-between gap-3">
                 <div>
                   <div className="font-bold text-sm sm:text-base text-white">Drone Aerial 4K Coverage</div>
@@ -536,7 +531,7 @@ Please confirm date lock & deposit instructions!`;
                 </button>
               </div>
 
-              {/* 5. Premium Hardbook Album Toggle */}
+              {/* Hardbook Toggle */}
               <div className="pt-4 flex items-center justify-between gap-3">
                 <div>
                   <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
@@ -566,7 +561,7 @@ Please confirm date lock & deposit instructions!`;
             </div>
           </div>
 
-          {/* STEP 4: CITY & DATE SELECTION */}
+          {/* STEP 4: CITY & DATE */}
           <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
@@ -614,7 +609,7 @@ Please confirm date lock & deposit instructions!`;
             </div>
           </div>
 
-          {/* LIVE COST SUMMARY PANEL */}
+          {/* COST SUMMARY & CTA PANEL */}
           <div className="bg-[#0B101D] border border-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden text-center max-w-2xl mx-auto">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-500" />
 
@@ -625,7 +620,6 @@ Please confirm date lock & deposit instructions!`;
               </span>
             </div>
 
-            {/* SAVINGS BADGE */}
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1 text-center">
               <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center justify-center gap-1.5">
                 <Gift className="w-4 h-4" /> Total Estimated Savings
@@ -635,7 +629,6 @@ Please confirm date lock & deposit instructions!`;
               </div>
             </div>
 
-            {/* TOTAL PRICE DISPLAY */}
             <div className="space-y-3 py-2">
               <div className="flex items-baseline justify-between text-sm">
                 <span className="text-slate-400 font-medium">Standard Market Value:</span>
@@ -651,19 +644,15 @@ Please confirm date lock & deposit instructions!`;
               </div>
             </div>
 
-            {/* WHATSAPP CTA WITH WHATSAPP ICON */}
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 ${
-                baseExperience
-                  ? "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-emerald-500/20"
-                  : "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50 pointer-events-none"
+              className={`w-full py-4 px-6 rounded-xl font-black text-slate-950 text-base sm:text-lg bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 hover:from-emerald-300 hover:to-teal-200 transition-all duration-300 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-3 ${
+                !baseExperience ? "opacity-50 pointer-events-none" : ""
               }`}
             >
-              <MessageCircle className="w-5 h-5 fill-slate-950 text-slate-950" />
-              {baseExperience ? "Lock Date & Reserve Offer via WhatsApp" : "Please Select Base Experience First"}
+              <span>Confirm & Lock Date via WhatsApp</span>
             </a>
           </div>
 
@@ -672,5 +661,4 @@ Please confirm date lock & deposit instructions!`;
     </section>
   );
 }
-
 export { InteractiveEventConfigurator as ServicePackages };
