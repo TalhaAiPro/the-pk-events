@@ -2,7 +2,7 @@
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
-import { ChevronLeft, ChevronRight, Sparkles, Volume2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
 import { VideoPlayer } from '@/components/video-player'
 
@@ -94,12 +94,6 @@ export function VideoGallery() {
                     src={clip.src}
                     aspect="9/16"
                   />
-                  
-                  {/* Subtle Sound & Play Overlay Badge */}
-                  <div className="pointer-events-none absolute bottom-3 right-3 z-20 flex items-center gap-1 rounded-full border border-white/20 bg-black/60 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur-md transition-opacity duration-300 group-hover:bg-primary group-hover:text-slate-950">
-                    <Volume2 className="h-3 w-3" />
-                    <span>TAP AUDIO</span>
-                  </div>
                 </div>
               </SwiperSlide>
             ))}
