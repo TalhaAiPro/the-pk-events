@@ -63,16 +63,16 @@ export function Hero() {
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]">
               #1 Mascot Entertainment
             </span>{' '}
-            & 4K Media Coverage
+            &amp; 4K Media Coverage
           </h1>
 
           {/* Subheading */}
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-300 sm:text-xl font-normal">
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-slate-200 sm:text-xl font-normal">
             Experience high-energy entrances with our massive{' '}
             <span className="font-bold text-white underline decoration-emerald-500 decoration-2 underline-offset-4">
               8.5 Feet Giant Gorilla Mascot
             </span>
-            , perfectly paired with dedicated camera professionals for full event DSLR photo & 4K video coverage.
+            , perfectly paired with dedicated camera professionals for full event DSLR photo &amp; 4K video coverage.
           </p>
 
           {/* Action Call Buttons */}
@@ -82,15 +82,17 @@ export function Hero() {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Book Gorilla Entrance on WhatsApp"
               className="inline-flex h-14 items-center justify-center gap-3 rounded-full bg-emerald-500 px-8 py-3.5 text-base font-extrabold text-slate-950 shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300 hover:bg-emerald-400 hover:scale-[1.03] active:scale-95 w-full sm:w-auto"
             >
               <WhatsAppIcon className="h-5 w-5 fill-slate-950" />
               <span>Book Gorilla Entrance</span>
             </a>
 
-            {/* Direct Section Anchor Link Button (#b2b-title) */}
+            {/* Direct Section Anchor Link Button (#b2b) */}
             <a
               href="#b2b"
+              aria-label="Navigate to B2B Partner Rates section"
               className="inline-flex h-14 items-center justify-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-8 py-3.5 text-base font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/10 hover:border-emerald-500/40 active:scale-95 w-full sm:w-auto shadow-lg shadow-black/40"
             >
               <Handshake className="h-5 w-5 text-emerald-400" />

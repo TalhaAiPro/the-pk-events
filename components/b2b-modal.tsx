@@ -130,48 +130,48 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="b2b-title"
-            className="relative my-auto w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-3xl border border-primary/20 bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-black/95 p-5 sm:p-8 shadow-[0_0_80px_rgba(16,185,129,0.15)] backdrop-blur-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            className="relative my-auto w-full max-w-lg max-h-[90dvh] overflow-y-auto rounded-3xl border border-emerald-500/30 bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-black/95 p-5 sm:p-8 shadow-[0_0_80px_rgba(16,185,129,0.15)] backdrop-blur-2xl [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             initial={{ opacity: 0, scale: 0.92, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 20 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Top Glow Accent */}
-            <div className="pointer-events-none absolute -top-12 left-1/2 h-24 w-48 -translate-x-1/2 rounded-full bg-primary/20 blur-2xl" />
+            <div className="pointer-events-none absolute -top-12 left-1/2 h-24 w-48 -translate-x-1/2 rounded-full bg-emerald-500/20 blur-2xl" />
 
             {/* Close Button */}
             <button
               type="button"
               onClick={reset}
-              aria-label="Close form"
-              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 hover:text-primary active:scale-95"
+              aria-label="Close modal"
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition-all duration-200 hover:border-emerald-500/40 hover:bg-emerald-500/10 hover:text-emerald-400 active:scale-95"
             >
               <X className="h-4 w-4" />
             </button>
 
             {/* Header Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
                 <Building2 className="h-3.5 w-3.5" /> B2B Exclusive Network
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-bold text-primary">
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-400">
                 <Sparkles className="h-3 w-3" /> High Yield
               </span>
             </div>
 
-            <h3 id="b2b-title" className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h2 id="b2b-title" className="mt-4 text-2xl sm:text-3xl font-black tracking-tight text-white">
               Become an Official B2B Partner
-            </h3>
+            </h2>
             
-            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-300">
-              Har booking par <strong className="text-primary font-bold underline decoration-primary/40 underline-offset-4">Min. PKR 3,000 or up to 10% Direct Commission</strong> earning start karein. Simple details fill karke direct WhatsApp connect karein:
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-200">
+              Har booking par <strong className="text-emerald-400 font-bold underline decoration-emerald-500/40 underline-offset-4">Min. PKR 3,000 or up to 10% Direct Commission</strong> earning start karein. Simple details fill karke direct WhatsApp connect karein:
             </p>
 
             {/* Form Inputs */}
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <InputField
                 label="Full Name"
-                id="name"
+                id="b2b-name"
                 icon={User}
                 value={form.name}
                 onChange={(v) => setForm((f) => ({ ...f, name: v }))}
@@ -180,7 +180,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
 
               <InputField
                 label="Phone Number (WhatsApp)"
-                id="phone"
+                id="b2b-phone"
                 type="tel"
                 icon={Phone}
                 value={form.phone}
@@ -192,20 +192,20 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                 {/* City Select */}
                 <div>
                   <label
-                    htmlFor="city"
-                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
+                    htmlFor="b2b-city"
+                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-200"
                   >
-                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <MapPin className="h-3.5 w-3.5 text-emerald-400" />
                     <span>Select City</span>
                   </label>
                   <select
-                    id="city"
+                    id="b2b-city"
                     required
                     value={form.city}
                     onChange={(e) =>
                       setForm((f) => ({ ...f, city: e.target.value }))
                     }
-                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-emerald-500 focus:bg-slate-900 focus:ring-1 focus:ring-emerald-500"
                   >
                     <option value="" disabled className="bg-slate-900 text-slate-400">
                       Select City
@@ -221,14 +221,14 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                 {/* Business Type Select */}
                 <div>
                   <label
-                    htmlFor="businessType"
-                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
+                    htmlFor="b2b-businessType"
+                    className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-200"
                   >
-                    <Briefcase className="h-3.5 w-3.5 text-primary" />
+                    <Briefcase className="h-3.5 w-3.5 text-emerald-400" />
                     <span>Business Type</span>
                   </label>
                   <select
-                    id="businessType"
+                    id="b2b-businessType"
                     required
                     value={form.businessType}
                     onChange={(e) =>
@@ -237,7 +237,7 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
                         businessType: e.target.value,
                       }))
                     }
-                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
+                    className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none transition-all focus:border-emerald-500 focus:bg-slate-900 focus:ring-1 focus:ring-emerald-500"
                   >
                     <option value="" disabled className="bg-slate-900 text-slate-400">
                       Select Type
@@ -264,15 +264,16 @@ export function B2BModal({ open, onClose }: B2BModalProps) {
               {/* High-Converting Emerald WhatsApp Button */}
               <button
                 type="submit"
+                aria-label="Apply Direct on WhatsApp for B2B Partnership"
                 className="group relative mt-3 flex h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-green-600 px-6 font-extrabold text-white shadow-[0_0_30px_rgba(16,185,129,0.35)] transition-all duration-300 hover:scale-[1.01] hover:from-emerald-400 hover:to-green-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] active:scale-[0.98]"
               >
                 <MessageSquare className="h-5 w-5 fill-current transition-transform group-hover:scale-110" />
                 <span>Apply Direct on WhatsApp</span>
               </button>
 
-              <div className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11px] text-slate-400">
-                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
-                <span>Instant VIP Response & Commission Verification</span>
+              <div className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11px] text-slate-300">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Instant VIP Response &amp; Commission Verification</span>
               </div>
             </form>
           </motion.div>
@@ -303,9 +304,9 @@ function InputField({
     <div>
       <label
         htmlFor={id}
-        className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-300"
+        className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-slate-200"
       >
-        <Icon className="h-3.5 w-3.5 text-primary" />
+        <Icon className="h-3.5 w-3.5 text-emerald-400" />
         <span>{label}</span>
       </label>
       <input
@@ -315,7 +316,7 @@ function InputField({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-slate-500 transition-all focus:border-primary focus:bg-slate-900 focus:ring-1 focus:ring-primary"
+        className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3.5 py-2.5 text-sm text-white outline-none placeholder:text-slate-400 transition-all focus:border-emerald-500 focus:bg-slate-900 focus:ring-1 focus:ring-emerald-500"
       />
     </div>
   )

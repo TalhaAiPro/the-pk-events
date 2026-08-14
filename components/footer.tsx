@@ -15,7 +15,10 @@ export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="relative bg-[#070A12] border-t border-slate-800/80 overflow-hidden text-slate-300">
+    <footer
+      aria-label="Site Footer"
+      className="relative bg-[#070A12] border-t border-slate-800/80 overflow-hidden text-slate-200"
+    >
       {/* Top Ambient Emerald Glow Background */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-emerald-500/10 blur-[120px] pointer-events-none rounded-full" />
 
@@ -24,10 +27,14 @@ export function Footer() {
           
           {/* Column 1: Brand Info & Mission */}
           <div className="flex flex-col items-center lg:items-start">
-            <Link href="#top" className="flex items-center gap-3.5 group cursor-pointer focus:outline-none">
+            <Link
+              href="#top"
+              aria-label="The PK Events Homepage"
+              className="flex items-center gap-3.5 group cursor-pointer focus:outline-none"
+            >
               <div className="relative h-12 w-12 overflow-hidden rounded-2xl bg-slate-900 border border-emerald-500/40 p-1 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400 shadow-xl shadow-emerald-950/50">
                 <Image
-                  src="/logo.png"
+                  src="/logo.webp"
                   alt="The PK Events Logo"
                   fill
                   className="object-contain p-0.5"
@@ -38,8 +45,8 @@ export function Footer() {
               </span>
             </Link>
             
-            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-400 max-w-sm">
-              Pakistan&apos;s premier giant mascot entertainment & cinematic media coverage agency. Delivering high-energy entrances and elite 4K productions.
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-slate-300 max-w-sm">
+              Pakistan&apos;s premier giant mascot entertainment &amp; cinematic media coverage agency. Delivering high-energy entrances and elite 4K productions.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-3">
@@ -52,6 +59,7 @@ export function Footer() {
                 href={getFooterWhatsAppLink()}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Book Event Now on WhatsApp"
                 className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-5 py-2 text-xs font-extrabold text-slate-950 transition-all duration-300 hover:bg-emerald-400 hover:scale-[1.03] active:scale-95 shadow-lg shadow-emerald-950/60"
               >
                 <MessageCircle className="h-4 w-4 fill-slate-950" />
@@ -62,15 +70,15 @@ export function Footer() {
 
           {/* Column 2: Central Operations HQ */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="flex items-center justify-center lg:justify-start gap-2 text-xs font-extrabold tracking-widest uppercase text-white font-mono">
+            <h2 className="flex items-center justify-center lg:justify-start gap-2 text-xs font-extrabold tracking-widest uppercase text-white font-mono">
               <MapPin className="h-4 w-4 text-emerald-400" />
               Operations HQ
-            </h3>
+            </h2>
             
             <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/60 p-4 backdrop-blur-xl w-full max-w-sm shadow-xl transition-all duration-300 hover:border-emerald-500/30">
               <p className="text-xs sm:text-sm font-bold text-white">Faisalabad Headquarters</p>
               <div className="mt-2.5 pt-2.5 border-t border-white/5 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Status:</span>
+                <span className="text-slate-300 font-medium">Status:</span>
                 <span className="flex items-center gap-1.5 font-bold text-emerald-400">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" /> Direct Dispatch Ready
                 </span>
@@ -80,10 +88,10 @@ export function Footer() {
 
           {/* Column 3: Multi-City Network */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="flex items-center justify-center lg:justify-start gap-2 text-xs font-extrabold tracking-widest uppercase text-white font-mono">
+            <h2 className="flex items-center justify-center lg:justify-start gap-2 text-xs font-extrabold tracking-widest uppercase text-white font-mono">
               <Globe2 className="h-4 w-4 text-emerald-400" />
               Service Cities
-            </h3>
+            </h2>
             
             <div className="mt-4 flex flex-wrap justify-center lg:justify-start gap-1.5 max-w-sm">
               {CITIES.map((c) => {
@@ -98,7 +106,7 @@ export function Footer() {
                         ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-sm shadow-emerald-950/60'
                         : isSpecial
                         ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
-                        : 'bg-slate-900/80 border-slate-800 text-slate-400 hover:border-emerald-500/30 hover:text-white'
+                        : 'bg-slate-900/80 border-slate-700 text-slate-300 hover:border-emerald-500/30 hover:text-white'
                     }`}
                   >
                     {c}
@@ -111,10 +119,10 @@ export function Footer() {
         </div>
 
         {/* Bottom Horizontal Divider & Copyright Bar */}
-        <div className="mt-14 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-xs text-slate-500">
+        <div className="mt-14 pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-xs text-slate-400">
           <p>© {currentYear} The PK Events. All Rights Reserved.</p>
-          <p className="font-mono text-slate-400 tracking-wider">
-            ThePKEvents.com : Giant Gorilla Mascots & Event Media Coverage Agency
+          <p className="font-mono text-slate-300 tracking-wider">
+            ThePKEvents.com : Giant Gorilla Mascots &amp; Event Media Coverage Agency
           </p>
         </div>
       </div>
