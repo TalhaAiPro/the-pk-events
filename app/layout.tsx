@@ -25,10 +25,10 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: '/favicon.ico' },
-      { url: '/favicon.png', type: 'image/png' },
+      { url: '/favicon.webp', type: 'image/webp' },
     ],
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    shortcut: '/favicon.webp',
+    apple: '/favicon.webp',
   },
   openGraph: {
     title: 'The PK Events | Giant Gorilla Mascots & Event Media Coverage',

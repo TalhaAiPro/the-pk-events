@@ -66,7 +66,7 @@ export function Navbar() {
           <a href="#top" className="flex items-center gap-3 group focus:outline-none">
             <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-slate-900/90 border border-emerald-500/40 p-0.5 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Image
-                src="/logo.png"
+                src="/logo.webp"
                 alt="The PK Events Logo"
                 fill
                 className="object-contain p-0.5"
