@@ -55,7 +55,6 @@ export function Navbar() {
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <nav
-          aria-label="Main Navigation"
           className={cn(
             'flex items-center justify-between rounded-2xl px-4 py-3 sm:px-5 transition-all duration-300 bg-[#090D16]/85 text-white backdrop-blur-xl border border-white/10 shadow-2xl',
             scrolled
@@ -64,11 +63,7 @@ export function Navbar() {
           )}
         >
           {/* Brand Logo */}
-          <a
-            href="#top"
-            aria-label="The PK Events Homepage"
-            className="flex items-center gap-3 group focus:outline-none"
-          >
+          <a href="#top" className="flex items-center gap-3 group focus:outline-none">
             <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl bg-slate-900/90 border border-emerald-500/40 p-0.5 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400 group-hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
               <Image
                 src="/logo.webp"
@@ -89,7 +84,7 @@ export function Navbar() {
               <li key={l.href}>
                 <a
                   href={l.href}
-                  className="relative text-sm font-semibold text-slate-100 transition-colors duration-200 hover:text-emerald-400 focus:outline-none"
+                  className="relative text-sm font-semibold text-slate-300 transition-colors duration-200 hover:text-emerald-400 focus:outline-none"
                 >
                   {l.label}
                 </a>
@@ -103,7 +98,6 @@ export function Navbar() {
               href={getHeaderWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Book Event Now on WhatsApp"
               className="hidden items-center gap-2.5 rounded-full bg-emerald-500 px-5 py-2.5 text-sm font-bold text-slate-950 transition-all duration-300 hover:bg-emerald-400 hover:scale-[1.03] active:scale-95 shadow-lg shadow-emerald-950/60 sm:flex"
             >
               <WhatsAppIcon className="h-4 w-4 fill-slate-950" />
@@ -114,8 +108,7 @@ export function Navbar() {
             <button
               type="button"
               onClick={() => setOpen((o) => !o)}
-              aria-label={open ? 'Close main menu' : 'Open main menu'}
-              aria-expanded={open}
+              aria-label="Toggle menu"
               className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 text-white lg:hidden transition-colors hover:bg-white/20 active:scale-95"
             >
               {open ? <X className="h-5 w-5 text-emerald-400" /> : <Menu className="h-5 w-5" />}
@@ -132,7 +125,7 @@ export function Navbar() {
                   <a
                     href={l.href}
                     onClick={() => setOpen(false)}
-                    className="block rounded-xl px-3.5 py-3 text-sm font-semibold text-slate-100 transition-all hover:bg-white/10 hover:text-emerald-400 active:bg-emerald-500/10"
+                    className="block rounded-xl px-3.5 py-3 text-sm font-semibold text-slate-200 transition-all hover:bg-white/10 hover:text-emerald-400 active:bg-emerald-500/10"
                   >
                     {l.label}
                   </a>
@@ -143,7 +136,6 @@ export function Navbar() {
               href={getHeaderWhatsAppLink()}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Book Event Now on WhatsApp"
               onClick={() => setOpen(false)}
               className="mt-3 flex items-center justify-center gap-2.5 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-bold text-slate-950 transition-all hover:bg-emerald-400 active:scale-95 shadow-md shadow-emerald-950/50"
             >

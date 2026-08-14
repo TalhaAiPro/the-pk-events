@@ -24,22 +24,26 @@ import {
 } from "lucide-react";
 
 type BaseExperienceType = "solo" | "vip" | null;
-type EventScaleType = "intimate" | "medium" | "large" | "mega" | null;
+type EventScaleType = "intimate" | "medium" | "large" | "mega";
 
 export default function InteractiveEventConfigurator() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
 
-  // --- STATE (ALL INITIALIZED TO UNSELECTED/EMPTY) ---
-  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>(null);
-  const [eventScale, setEventScale] = useState<EventScaleType>(null);
-  const [mascotsCount, setMascotsCount] = useState<number>(0);
-  const [videographers, setVideographers] = useState<number>(0);
-  const [photographers, setPhotographers] = useState<number>(0);
-  const [droneCoverage, setDroneCoverage] = useState<boolean>(false);
+  // --- STATE ---
+  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>("vip");
+  const [eventScale, setEventScale] = useState<EventScaleType>("medium");
+  const [mascotsCount, setMascotsCount] = useState<number>(1);
+  const [videographers, setVideographers] = useState<number>(1);
+  const [photographers, setPhotographers] = useState<number>(1);
+  const [droneCoverage, setDroneCoverage] = useState<boolean>(true);
   const [hardbookAlbum, setHardbookAlbum] = useState<boolean>(false);
-  const [city, setCity] = useState<string>("");
-  const [eventDate, setEventDate] = useState<string>("");
+  const [city, setCity] = useState<string>("Faisalabad");
+  const [eventDate, setEventDate] = useState<string>(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  });
 
   // Mobile Sticky Bar Observer
   useEffect(() => {
@@ -185,11 +189,12 @@ export default function InteractiveEventConfigurator() {
   }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
 
   const whatsappUrl = useMemo(() => {
-    const phone = "923396224168";
+    // UPDATED ACTIVE CONTACT NUMBER
+    const phone = "923000000000";
     const message = `Assalam-o-Alaikum ThePKEvents Team! I want to confirm date availability for my custom event booking:
 
 📅 *Event Date:* ${eventDate || "Not Specified"}
-📍 *City:* ${city || "Not Specified"}
+📍 *City:* ${city}
 👥 *Guest Scale:* ${
       eventScale === "intimate"
         ? "Intimate (<30 Guests)"
@@ -197,9 +202,7 @@ export default function InteractiveEventConfigurator() {
         ? "Medium (30-80 Guests)"
         : eventScale === "large"
         ? "Large (80-150 Guests)"
-        : eventScale === "mega"
-        ? "Mega Event / Wedding (150+ Guests)"
-        : "Not Selected"
+        : "Mega Event / Wedding (150+ Guests)"
     }
 🦍 *Mascots Fleet:* ${mascotsCount} Premium Gorilla(s)
 🎥 *Media Setup:* ${videographers} Videographer(s), ${photographers} Photographer(s), Drone: ${droneCoverage ? "Yes (4K Aerial)" : "No"}
@@ -228,7 +231,7 @@ Please confirm date lock & deposit instructions!`;
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-inner">
             <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-            Live Event Configurator &amp; Instant Price Engine
+            Live Event Configurator & Instant Price Engine
           </div>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
             Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500">Unforgettable Event</span>
@@ -287,7 +290,7 @@ Please confirm date lock & deposit instructions!`;
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      Crowd Hype, Photos &amp; Stage Interactivity
+                      Crowd Hype, Photos & Stage Interactivity
                     </li>
                   </ul>
                 </div>
@@ -336,7 +339,7 @@ Please confirm date lock & deposit instructions!`;
                   <ul className="space-y-2 text-xs sm:text-sm text-slate-300 pt-1">
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      Mascot Show + Cinema Crew &amp; Drone Setup
+                      Mascot Show + Cinema Crew & Drone Setup
                     </li>
                     <li className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
@@ -354,7 +357,7 @@ Please confirm date lock & deposit instructions!`;
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 2
               </span>
-              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Scale &amp; Capacity</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Scale & Capacity</h3>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -380,27 +383,25 @@ Please confirm date lock & deposit instructions!`;
               ))}
             </div>
 
-            {eventScale && (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={eventScale}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
-                  className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
-                >
-                  <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs sm:text-sm text-slate-300">
-                    <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
-                    {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
-                    {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
-                    {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
-                    {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            )}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={eventScale}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.2 }}
+                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
+              >
+                <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                <div className="text-xs sm:text-sm text-slate-300">
+                  <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
+                  {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
+                  {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
+                  {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
+                  {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* STEP 3: GRANULAR CREW & DELIVERABLES */}
@@ -409,7 +410,7 @@ Please confirm date lock & deposit instructions!`;
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 3
               </span>
-              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Customize Crew &amp; Deliverables</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Customize Crew & Deliverables</h3>
             </div>
 
             <div className="space-y-4 divide-y divide-slate-800/70">
@@ -569,7 +570,7 @@ Please confirm date lock & deposit instructions!`;
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
                 4
               </span>
-              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Location &amp; Booking Date</h3>
+              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Location & Booking Date</h3>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -584,7 +585,6 @@ Please confirm date lock & deposit instructions!`;
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full min-h-[50px] bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500 appearance-none pr-10 cursor-pointer font-medium"
                   >
-                    <option value="" disabled>Choose City</option>
                     <option value="Faisalabad">Faisalabad</option>
                     <option value="Lahore">Lahore</option>
                     <option value="Islamabad / Rawalpindi">Islamabad / Rawalpindi</option>
@@ -654,17 +654,64 @@ Please confirm date lock & deposit instructions!`;
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 bg-emerald-400 hover:bg-emerald-300 ${
-                !baseExperience ? "opacity-50 pointer-events-none" : ""
+              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 ${
+                !baseExperience 
+                  ? "bg-slate-700 text-slate-400 cursor-not-allowed pointer-events-none" 
+                  : "bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/20 active:scale-[0.98]"
               }`}
             >
-              <MessageSquare className="w-5 h-5 fill-slate-950" />
-              <span>Confirm & Lock Date on WhatsApp</span>
+              <MessageSquare className="w-5 h-5 fill-slate-950 stroke-none" />
+              <span>{baseExperience ? "CONFIRM & LOCK DATE VIA WHATSAPP" : "SELECT A PLAN FIRST"}</span>
             </a>
+
+            <div className="flex items-center justify-center gap-4 text-slate-400 text-xs pt-1">
+              <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Instant Date Lock</span>
+              <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5 text-emerald-400" /> 100% Quality Assurance</span>
+            </div>
           </div>
 
         </div>
       </div>
+
+      {/* MOBILE STICKY BOTTOM DRAWER */}
+      <AnimatePresence>
+        {isSectionVisible && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B101D]/95 backdrop-blur-lg border-t border-slate-800 p-4 shadow-2xl"
+          >
+            <div className="max-w-md mx-auto flex items-center justify-between gap-3">
+              <div className="space-y-0.5">
+                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-tight">
+                  {baseExperience ? `Save PKR ${pricing.savings.toLocaleString()}+` : "Select Plan"}
+                </div>
+                <div className="text-xl font-black text-emerald-400 leading-none">
+                  PKR {pricing.direct.toLocaleString()}
+                </div>
+              </div>
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`min-h-[48px] px-5 py-2.5 rounded-xl font-black text-xs tracking-wide transition-colors flex items-center gap-2 shrink-0 ${
+                  !baseExperience 
+                    ? "bg-slate-800 text-slate-500 cursor-not-allowed pointer-events-none" 
+                    : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20"
+                }`}
+              >
+                <MessageSquare className="w-4 h-4 fill-slate-950 stroke-none" />
+                <span>{baseExperience ? "BOOK WHATSAPP" : "CHOOSE PLAN"}</span>
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
+
+export { InteractiveEventConfigurator as ServicePackages };
