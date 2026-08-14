@@ -27,7 +27,7 @@ export function Footer() {
             <Link href="#top" className="flex items-center gap-3.5 group cursor-pointer focus:outline-none">
               <div className="relative h-12 w-12 overflow-hidden rounded-2xl bg-slate-900 border border-emerald-500/40 p-1 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400 shadow-xl shadow-emerald-950/50">
                 <Image
-                  src="/logo.png"
+                  src="/logo.webp"
                   alt="The PK Events Logo"
                   fill
                   className="object-contain p-0.5"

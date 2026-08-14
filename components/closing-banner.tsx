@@ -3,9 +3,12 @@
 import { motion } from 'framer-motion'
 import { Sparkles, ShieldCheck } from 'lucide-react'
 import { Reveal } from '@/components/reveal'
-import { buildGeneralWhatsAppLink } from '@/lib/site'
 
 export function ClosingBanner() {
+  const phoneNumber = '923396224168'
+  const message = encodeURIComponent('Assalam-o-Alaikum! I want to book an event with ThePKEvents. Please share available dates.')
+  const whatsAppUrl = `https://wa.me/${phoneNumber}?text=${message}`
+
   return (
     <section className="relative mx-auto max-w-7xl px-4 py-20 sm:py-24 overflow-hidden">
       {/* Background Ambient Emerald Glow Accent */}
@@ -36,7 +39,7 @@ export function ClosingBanner() {
 
           <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
             <motion.a
-              href={buildGeneralWhatsAppLink()}
+              href={whatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
               animate={{ scale: [1, 1.03, 1] }}
