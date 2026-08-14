@@ -14,7 +14,7 @@ import {
   Gift,
   Calendar,
   MapPin,
-  MessageSquare,
+  MessageCircle,
   Zap,
   ChevronDown,
   Check,
@@ -186,7 +186,8 @@ export default function InteractiveEventConfigurator() {
   }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
 
   const whatsappUrl = useMemo(() => {
-    const phone = "923000000000";
+    // UPDATED ACTIVE CONTACT NUMBER
+    const phone = "923396224168";
     const message = `Assalam-o-Alaikum ThePKEvents Team! I want to confirm date availability for my custom event booking:
 
 📅 *Event Date:* ${eventDate || "Not Specified"}
@@ -650,18 +651,18 @@ Please confirm date lock & deposit instructions!`;
               </div>
             </div>
 
-            {/* WHATSAPP CTA */}
+            {/* WHATSAPP CTA WITH WHATSAPP ICON */}
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2 ${
+              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 ${
                 baseExperience
                   ? "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-emerald-500/20"
                   : "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50 pointer-events-none"
               }`}
             >
-              <MessageSquare className="w-5 h-5 fill-slate-950" />
+              <MessageCircle className="w-5 h-5 fill-slate-950 text-slate-950" />
               {baseExperience ? "Lock Date & Reserve Offer via WhatsApp" : "Please Select Base Experience First"}
             </a>
           </div>
@@ -671,4 +672,5 @@ Please confirm date lock & deposit instructions!`;
     </section>
   );
 }
+
 export { InteractiveEventConfigurator as ServicePackages };
