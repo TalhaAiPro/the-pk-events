@@ -24,26 +24,22 @@ import {
 } from "lucide-react";
 
 type BaseExperienceType = "solo" | "vip" | null;
-type EventScaleType = "intimate" | "medium" | "large" | "mega";
+type EventScaleType = "intimate" | "medium" | "large" | "mega" | null;
 
 export default function InteractiveEventConfigurator() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isSectionVisible, setIsSectionVisible] = useState(false);
 
-  // --- STATE ---
-  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>("vip");
-  const [eventScale, setEventScale] = useState<EventScaleType>("medium");
-  const [mascotsCount, setMascotsCount] = useState<number>(1);
-  const [videographers, setVideographers] = useState<number>(1);
-  const [photographers, setPhotographers] = useState<number>(1);
-  const [droneCoverage, setDroneCoverage] = useState<boolean>(true);
+  // --- STATE (INITIALIZED TO UNSELECTED / ZERO) ---
+  const [baseExperience, setBaseExperience] = useState<BaseExperienceType>(null);
+  const [eventScale, setEventScale] = useState<EventScaleType>(null);
+  const [mascotsCount, setMascotsCount] = useState<number>(0);
+  const [videographers, setVideographers] = useState<number>(0);
+  const [photographers, setPhotographers] = useState<number>(0);
+  const [droneCoverage, setDroneCoverage] = useState<boolean>(false);
   const [hardbookAlbum, setHardbookAlbum] = useState<boolean>(false);
   const [city, setCity] = useState<string>("Faisalabad");
-  const [eventDate, setEventDate] = useState<string>(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return tomorrow.toISOString().split("T")[0];
-  });
+  const [eventDate, setEventDate] = useState<string>("");
 
   // Mobile Sticky Bar Observer
   useEffect(() => {
@@ -99,6 +95,7 @@ export default function InteractiveEventConfigurator() {
       setVideographers(1);
       setPhotographers(1);
       setDroneCoverage(true);
+      if (!eventScale) setEventScale("medium");
     }
   };
 
@@ -189,7 +186,6 @@ export default function InteractiveEventConfigurator() {
   }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
 
   const whatsappUrl = useMemo(() => {
-    // UPDATED ACTIVE CONTACT NUMBER
     const phone = "923000000000";
     const message = `Assalam-o-Alaikum ThePKEvents Team! I want to confirm date availability for my custom event booking:
 
@@ -202,7 +198,9 @@ export default function InteractiveEventConfigurator() {
         ? "Medium (30-80 Guests)"
         : eventScale === "large"
         ? "Large (80-150 Guests)"
-        : "Mega Event / Wedding (150+ Guests)"
+        : eventScale === "mega"
+        ? "Mega Event / Wedding (150+ Guests)"
+        : "Not Selected"
     }
 🦍 *Mascots Fleet:* ${mascotsCount} Premium Gorilla(s)
 🎥 *Media Setup:* ${videographers} Videographer(s), ${photographers} Photographer(s), Drone: ${droneCoverage ? "Yes (4K Aerial)" : "No"}
@@ -384,23 +382,25 @@ Please confirm date lock & deposit instructions!`;
             </div>
 
             <AnimatePresence mode="wait">
-              <motion.div
-                key={eventScale}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2 }}
-                className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
-              >
-                <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                <div className="text-xs sm:text-sm text-slate-300">
-                  <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
-                  {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
-                  {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
-                  {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
-                  {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
-                </div>
-              </motion.div>
+              {eventScale && (
+                <motion.div
+                  key={eventScale}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
+                >
+                  <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                  <div className="text-xs sm:text-sm text-slate-300">
+                    <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
+                    {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
+                    {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
+                    {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
+                    {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
@@ -427,7 +427,7 @@ Please confirm date lock & deposit instructions!`;
                   <button
                     type="button"
                     onClick={() => setMascotsCount((prev) => Math.max(1, prev - 1))}
-                    disabled={mascotsCount <= 1}
+                    disabled={!baseExperience || mascotsCount <= 1}
                     className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Minus className="w-4 h-4" />
@@ -436,7 +436,8 @@ Please confirm date lock & deposit instructions!`;
                   <button
                     type="button"
                     onClick={() => setMascotsCount((prev) => prev + 1)}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
+                    disabled={!baseExperience}
+                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
                   </button>
@@ -468,7 +469,7 @@ Please confirm date lock & deposit instructions!`;
                   <button
                     type="button"
                     onClick={() => setVideographers((prev) => prev + 1)}
-                    disabled={baseExperience === "solo"}
+                    disabled={baseExperience === "solo" || !baseExperience}
                     className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
@@ -501,7 +502,7 @@ Please confirm date lock & deposit instructions!`;
                   <button
                     type="button"
                     onClick={() => setPhotographers((prev) => prev + 1)}
-                    disabled={baseExperience === "solo"}
+                    disabled={baseExperience === "solo" || !baseExperience}
                     className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
                   >
                     <Plus className="w-4 h-4" />
@@ -521,7 +522,7 @@ Please confirm date lock & deposit instructions!`;
                 <button
                   type="button"
                   onClick={() => setDroneCoverage((prev) => !prev)}
-                  disabled={baseExperience === "solo"}
+                  disabled={baseExperience === "solo" || !baseExperience}
                   className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
                     droneCoverage ? "bg-emerald-500" : "bg-slate-800"
                   }`}
@@ -549,7 +550,7 @@ Please confirm date lock & deposit instructions!`;
                 <button
                   type="button"
                   onClick={() => setHardbookAlbum((prev) => !prev)}
-                  disabled={baseExperience === "solo"}
+                  disabled={baseExperience === "solo" || !baseExperience}
                   className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
                     hardbookAlbum ? "bg-emerald-500" : "bg-slate-800"
                   }`}
@@ -654,64 +655,20 @@ Please confirm date lock & deposit instructions!`;
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2.5 ${
-                !baseExperience 
-                  ? "bg-slate-700 text-slate-400 cursor-not-allowed pointer-events-none" 
-                  : "bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/20 active:scale-[0.98]"
+              className={`w-full min-h-[54px] px-6 py-4 rounded-xl text-slate-950 font-black text-base tracking-wide transition-all duration-200 shadow-xl flex items-center justify-center gap-2 ${
+                baseExperience
+                  ? "bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-emerald-500/20"
+                  : "bg-slate-700 text-slate-400 cursor-not-allowed opacity-50 pointer-events-none"
               }`}
             >
-              <MessageSquare className="w-5 h-5 fill-slate-950 stroke-none" />
-              <span>{baseExperience ? "CONFIRM & LOCK DATE VIA WHATSAPP" : "SELECT A PLAN FIRST"}</span>
+              <MessageSquare className="w-5 h-5 fill-slate-950" />
+              {baseExperience ? "Lock Date & Reserve Offer via WhatsApp" : "Please Select Base Experience First"}
             </a>
-
-            <div className="flex items-center justify-center gap-4 text-slate-400 text-xs pt-1">
-              <span className="flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Instant Date Lock</span>
-              <span className="flex items-center gap-1"><Award className="w-3.5 h-3.5 text-emerald-400" /> 100% Quality Assurance</span>
-            </div>
           </div>
 
         </div>
       </div>
-
-      {/* MOBILE STICKY BOTTOM DRAWER */}
-      <AnimatePresence>
-        {isSectionVisible && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0B101D]/95 backdrop-blur-lg border-t border-slate-800 p-4 shadow-2xl"
-          >
-            <div className="max-w-md mx-auto flex items-center justify-between gap-3">
-              <div className="space-y-0.5">
-                <div className="text-[10px] font-bold text-amber-400 uppercase tracking-tight">
-                  {baseExperience ? `Save PKR ${pricing.savings.toLocaleString()}+` : "Select Plan"}
-                </div>
-                <div className="text-xl font-black text-emerald-400 leading-none">
-                  PKR {pricing.direct.toLocaleString()}
-                </div>
-              </div>
-
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`min-h-[48px] px-5 py-2.5 rounded-xl font-black text-xs tracking-wide transition-colors flex items-center gap-2 shrink-0 ${
-                  !baseExperience 
-                    ? "bg-slate-800 text-slate-500 cursor-not-allowed pointer-events-none" 
-                    : "bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20"
-                }`}
-              >
-                <MessageSquare className="w-4 h-4 fill-slate-950 stroke-none" />
-                <span>{baseExperience ? "BOOK WHATSAPP" : "CHOOSE PLAN"}</span>
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
-
 export { InteractiveEventConfigurator as ServicePackages };
