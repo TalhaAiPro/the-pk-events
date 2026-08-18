@@ -56,7 +56,7 @@ export default function InteractiveEventConfigurator() {
   // --- RATES ---
   const MKT_RATES = {
     soloBase: 30000,
-    vipBase: 65000,
+    vipBase: 30000,
     extraMascot: 22000,
     videographer: 35000,
     photographer: 28000,
@@ -68,7 +68,7 @@ export default function InteractiveEventConfigurator() {
 
   const DIRECT_RATES = {
     soloBase: 25000,
-    vipBase: 50000,
+    vipBase: 25000, // Fixed: Base rates aligned so 25k base + 28k video = 53k
     extraMascot: 18000,
     videographer: 28000,
     photographer: 22000,
@@ -78,7 +78,7 @@ export default function InteractiveEventConfigurator() {
     hardbook: 15000,
   };
 
-  // --- HANDLERS (FIXED LOGIC) ---
+  // --- HANDLERS ---
   const handleSelectExperience = (type: BaseExperienceType) => {
     setBaseExperience(type);
     if (type === "solo") {
@@ -89,11 +89,13 @@ export default function InteractiveEventConfigurator() {
       setHardbookAlbum(false);
       setEventScale(null);
     } else if (type === "vip") {
+      // Unselect scale by default as requested
+      setEventScale(null);
       setMascotsCount(1);
-      setVideographers(1);
-      setPhotographers(1);
-      setDroneCoverage(true);
-      setEventScale("medium");
+      setVideographers(0);
+      setPhotographers(0);
+      setDroneCoverage(false);
+      setHardbookAlbum(false);
     }
   };
 
@@ -190,7 +192,9 @@ export default function InteractiveEventConfigurator() {
 📅 *Event Date:* ${eventDate || "Not Specified"}
 📍 *City:* ${city}
 👥 *Guest Scale:* ${
-      eventScale === "intimate"
+      baseExperience === "solo"
+        ? "Solo Gorilla Entrance"
+        : eventScale === "intimate"
         ? "Intimate (<30 Guests)"
         : eventScale === "medium"
         ? "Medium (30-80 Guests)"
@@ -198,7 +202,7 @@ export default function InteractiveEventConfigurator() {
         ? "Large (80-150 Guests)"
         : eventScale === "mega"
         ? "Mega Event / Wedding (150+ Guests)"
-        : "Not Selected"
+        : "Custom Selection"
     }
 🦍 *Mascots Fleet:* ${mascotsCount} Premium Gorilla(s)
 🎥 *Media Setup:* ${videographers} Videographer(s), ${photographers} Photographer(s), Drone: ${droneCoverage ? "Yes (4K Aerial)" : "No"}
@@ -210,7 +214,7 @@ export default function InteractiveEventConfigurator() {
 Please confirm date lock & deposit instructions!`;
 
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  }, [eventDate, city, eventScale, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, pricing]);
+  }, [eventDate, city, baseExperience, eventScale, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, pricing]);
 
   return (
     <section 
@@ -346,226 +350,225 @@ Please confirm date lock & deposit instructions!`;
           </div>
 
           {/* STEP 2: EVENT SCALE */}
-          <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
-            <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
-                2
-              </span>
-              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Scale & Capacity</h3>
-            </div>
+          {baseExperience === "vip" && (
+            <div className="bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300">
+              <div className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
+                  2
+                </span>
+                <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Scale & Capacity</h3>
+              </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {[
-                { id: "intimate" as EventScaleType, label: "Intimate", desc: "<30 Guests" },
-                { id: "medium" as EventScaleType, label: "Medium", desc: "30–80 Guests" },
-                { id: "large" as EventScaleType, label: "Large", desc: "80–150 Guests" },
-                { id: "mega" as EventScaleType, label: "Mega / Wedding", desc: "150+ Guests" },
-              ].map((scale) => (
-                <button
-                  key={scale.id}
-                  type="button"
-                  onClick={() => handleSelectScale(scale.id)}
-                  className={`min-h-[52px] p-3 rounded-xl border text-center transition-all duration-200 flex flex-col items-center justify-center ${
-                    eventScale === scale.id
-                      ? "bg-emerald-500/15 border-emerald-500 text-white ring-1 ring-emerald-500/30"
-                      : "bg-slate-900/40 border-slate-800 text-slate-300 hover:border-slate-700"
-                  }`}
-                >
-                  <span className="font-bold text-xs sm:text-sm">{scale.label}</span>
-                  <span className="text-[11px] text-slate-400">{scale.desc}</span>
-                </button>
-              ))}
-            </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { id: "intimate" as EventScaleType, label: "Intimate", desc: "<30 Guests" },
+                  { id: "medium" as EventScaleType, label: "Medium", desc: "30–80 Guests" },
+                  { id: "large" as EventScaleType, label: "Large", desc: "80–150 Guests" },
+                  { id: "mega" as EventScaleType, label: "Mega / Wedding", desc: "150+ Guests" },
+                ].map((scale) => (
+                  <button
+                    key={scale.id}
+                    type="button"
+                    onClick={() => handleSelectScale(scale.id)}
+                    className={`min-h-[52px] p-3 rounded-xl border text-center transition-all duration-200 flex flex-col items-center justify-center ${
+                      eventScale === scale.id
+                        ? "bg-emerald-500/15 border-emerald-500 text-white ring-1 ring-emerald-500/30"
+                        : "bg-slate-900/40 border-slate-800 text-slate-300 hover:border-slate-700"
+                    }`}
+                  >
+                    <span className="font-bold text-xs sm:text-sm">{scale.label}</span>
+                    <span className="text-[11px] text-slate-400">{scale.desc}</span>
+                  </button>
+                ))}
+              </div>
 
-            <AnimatePresence mode="wait">
-              {eventScale && (
-                <motion.div
-                  key={eventScale}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.2 }}
-                  className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
-                >
-                  <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                  <div className="text-xs sm:text-sm text-slate-300">
-                    <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
-                    {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
-                    {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
-                    {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
-                    {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              <AnimatePresence mode="wait">
+                {eventScale && (
+                  <motion.div
+                    key={eventScale}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 flex items-start justify-center text-center gap-3"
+                  >
+                    <Zap className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                    <div className="text-xs sm:text-sm text-slate-300">
+                      <span className="font-bold text-emerald-400">Smart Scale Recommendation: </span>
+                      {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
+                      {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
+                      {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
+                      {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
 
           {/* STEP 3: CREW & DELIVERABLES */}
-          <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-6 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
-            <div className="flex items-center justify-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
-                3
-              </span>
-              <h3 className="text-lg sm:text-2xl font-black text-white text-center">Customize Crew & Deliverables</h3>
-            </div>
-
-            <div className="space-y-4 divide-y divide-slate-800/70">
-              {/* Mascots Counter */}
-              <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                    <Users className="w-4 h-4 text-emerald-400" />
-                    Mascots Fleet Units
-                  </div>
-                  <p className="text-xs text-slate-400">PKR 18,000 per extra mascot unit</p>
-                </div>
-                <div className="flex items-center gap-3 self-end sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={() => setMascotsCount((prev) => Math.max(1, prev - 1))}
-                    disabled={!baseExperience || mascotsCount <= 1}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="font-black text-base w-6 text-center text-white">{mascotsCount}</span>
-                  <button
-                    type="button"
-                    onClick={() => setMascotsCount((prev) => prev + 1)}
-                    disabled={!baseExperience}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
+          {baseExperience === "vip" && (
+            <div className="bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-6 transition-all duration-300">
+              <div className="flex items-center justify-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
+                  3
+                </span>
+                <h3 className="text-lg sm:text-2xl font-black text-white text-center">Customize Crew & Deliverables</h3>
               </div>
 
-              {/* Videographers Counter */}
-              <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                    <Video className="w-4 h-4 text-emerald-400" />
-                    Videographer (Cinema 4K Cameraman)
+              <div className="space-y-4 divide-y divide-slate-800/70">
+                {/* Mascots Counter */}
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                      <Users className="w-4 h-4 text-emerald-400" />
+                      Mascots Fleet Units
+                    </div>
+                    <p className="text-xs text-slate-400">PKR 18,000 per extra mascot unit</p>
                   </div>
-                  <div className="text-xs space-x-2 mt-0.5">
-                    <span className="text-slate-500 line-through">Market: PKR 35,000</span>
-                    <span className="text-emerald-400 font-semibold">Direct: PKR 28,000</span>
+                  <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setMascotsCount((prev) => Math.max(1, prev - 1))}
+                      disabled={mascotsCount <= 1}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="font-black text-base w-6 text-center text-white">{mascotsCount}</span>
+                    <button
+                      type="button"
+                      onClick={() => setMascotsCount((prev) => prev + 1)}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 self-end sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={() => setVideographers((prev) => Math.max(0, prev - 1))}
-                    disabled={baseExperience === "solo" || videographers <= 0}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="font-black text-base w-6 text-center text-white">{videographers}</span>
-                  <button
-                    type="button"
-                    onClick={() => setVideographers((prev) => prev + 1)}
-                    disabled={baseExperience === "solo" || !baseExperience}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
 
-              {/* Photographers Counter */}
-              <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                    <Camera className="w-4 h-4 text-emerald-400" />
-                    Photographer (DSLR High-Res)
+                {/* Videographers Counter */}
+                <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                      <Video className="w-4 h-4 text-emerald-400" />
+                      Videographer (Cinema 4K Cameraman)
+                    </div>
+                    <div className="text-xs space-x-2 mt-0.5">
+                      <span className="text-slate-500 line-through">Market: PKR 35,000</span>
+                      <span className="text-emerald-400 font-semibold">Direct: PKR 28,000</span>
+                    </div>
                   </div>
-                  <div className="text-xs space-x-2 mt-0.5">
-                    <span className="text-slate-500 line-through">Market: PKR 28,000</span>
-                    <span className="text-emerald-400 font-semibold">Direct: PKR 22,000</span>
+                  <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setVideographers((prev) => Math.max(0, prev - 1))}
+                      disabled={videographers <= 0}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="font-black text-base w-6 text-center text-white">{videographers}</span>
+                    <button
+                      type="button"
+                      onClick={() => setVideographers((prev) => prev + 1)}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 self-end sm:self-auto">
-                  <button
-                    type="button"
-                    onClick={() => setPhotographers((prev) => Math.max(0, prev - 1))}
-                    disabled={baseExperience === "solo" || photographers <= 0}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="font-black text-base w-6 text-center text-white">{photographers}</span>
-                  <button
-                    type="button"
-                    onClick={() => setPhotographers((prev) => prev + 1)}
-                    disabled={baseExperience === "solo" || !baseExperience}
-                    className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
 
-              {/* Drone Toggle */}
-              <div className="pt-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="font-bold text-sm sm:text-base text-white">Drone Aerial 4K Coverage</div>
-                  <div className="text-xs space-x-2 mt-0.5">
-                    <span className="text-slate-500 line-through">Market: PKR 18,000</span>
-                    <span className="text-emerald-400 font-semibold">Direct: PKR 12,000</span>
+                {/* Photographers Counter */}
+                <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                      <Camera className="w-4 h-4 text-emerald-400" />
+                      Photographer (DSLR High-Res)
+                    </div>
+                    <div className="text-xs space-x-2 mt-0.5">
+                      <span className="text-slate-500 line-through">Market: PKR 28,000</span>
+                      <span className="text-emerald-400 font-semibold">Direct: PKR 22,000</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 self-end sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setPhotographers((prev) => Math.max(0, prev - 1))}
+                      disabled={photographers <= 0}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 disabled:opacity-30 transition-colors"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </button>
+                    <span className="font-black text-base w-6 text-center text-white">{photographers}</span>
+                    <button
+                      type="button"
+                      onClick={() => setPhotographers((prev) => prev + 1)}
+                      className="w-10 h-10 rounded-lg bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setDroneCoverage((prev) => !prev)}
-                  disabled={baseExperience === "solo" || !baseExperience}
-                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
-                    droneCoverage ? "bg-emerald-500" : "bg-slate-800"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
-                      droneCoverage ? "translate-x-5" : "translate-x-0"
+
+                {/* Drone Toggle */}
+                <div className="pt-4 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-white">Drone Aerial 4K Coverage</div>
+                    <div className="text-xs space-x-2 mt-0.5">
+                      <span className="text-slate-500 line-through">Market: PKR 18,000</span>
+                      <span className="text-emerald-400 font-semibold">Direct: PKR 12,000</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDroneCoverage((prev) => !prev)}
+                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                      droneCoverage ? "bg-emerald-500" : "bg-slate-800"
                     }`}
-                  />
-                </button>
-              </div>
-
-              {/* Hardbook Toggle */}
-              <div className="pt-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-emerald-400" />
-                    Premium Printed Hardbook Album
-                  </div>
-                  <div className="text-xs space-x-2 mt-0.5">
-                    <span className="text-slate-500 line-through">Market: PKR 20,000</span>
-                    <span className="text-emerald-400 font-semibold">Direct: PKR 15,000</span>
-                  </div>
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
+                        droneCoverage ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setHardbookAlbum((prev) => !prev)}
-                  disabled={baseExperience === "solo" || !baseExperience}
-                  className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out disabled:opacity-30 ${
-                    hardbookAlbum ? "bg-emerald-500" : "bg-slate-800"
-                  }`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
-                      hardbookAlbum ? "translate-x-5" : "translate-x-0"
+
+                {/* Hardbook Toggle */}
+                <div className="pt-4 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-emerald-400" />
+                      Premium Printed Hardbook Album
+                    </div>
+                    <div className="text-xs space-x-2 mt-0.5">
+                      <span className="text-slate-500 line-through">Market: PKR 20,000</span>
+                      <span className="text-emerald-400 font-semibold">Direct: PKR 15,000</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setHardbookAlbum((prev) => !prev)}
+                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                      hardbookAlbum ? "bg-emerald-500" : "bg-slate-800"
                     }`}
-                  />
-                </button>
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
+                        hardbookAlbum ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* STEP 4: CITY & DATE */}
           <div className={`bg-[#0B101D] border border-slate-800/90 rounded-2xl p-5 sm:p-8 shadow-2xl space-y-5 transition-all duration-300 ${!baseExperience ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
             <div className="flex items-center justify-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-sm border border-emerald-500/40">
-                4
+                {baseExperience === "solo" ? "2" : "4"}
               </span>
               <h3 className="text-lg sm:text-2xl font-black text-white text-center">Event Location & Booking Date</h3>
             </div>
@@ -655,7 +658,6 @@ Please confirm date lock & deposit instructions!`;
               <span>Confirm & Lock Date via WhatsApp</span>
             </a>
           </div>
-
         </div>
       </div>
     </section>
