@@ -17,7 +17,8 @@ import {
   Zap,
   ChevronDown,
   Check,
-  BookOpen
+  BookOpen,
+  Tag
 } from "lucide-react";
 
 type BaseExperienceType = "solo" | "vip" | null;
@@ -35,6 +36,7 @@ export default function InteractiveEventConfigurator() {
   const [photographers, setPhotographers] = useState<number>(0);
   const [droneCoverage, setDroneCoverage] = useState<boolean>(false);
   const [hardbookAlbum, setHardbookAlbum] = useState<boolean>(false);
+  const [isMultiDay, setIsMultiDay] = useState<boolean>(false); // Added 3-Day Wedding Toggle
   const [city, setCity] = useState<string>("Faisalabad");
   const [eventDate, setEventDate] = useState<string>("");
 
@@ -53,7 +55,7 @@ export default function InteractiveEventConfigurator() {
     return () => observer.disconnect();
   }, []);
 
-  // --- RATES ---
+  // --- DYNAMIC RETAIL & BULK DISCOUNT RATES ---
   const MKT_RATES = {
     soloBase: 30000,
     vipBase: 30000,
@@ -68,10 +70,13 @@ export default function InteractiveEventConfigurator() {
 
   const DIRECT_RATES = {
     soloBase: 25000,
-    vipBase: 25000, // Fixed: Base rates aligned so 25k base + 28k video = 53k
+    vipBase: 25000,
     extraMascot: 18000,
-    videographer: 28000,
-    photographer: 22000,
+    // Dynamic Tiering Rates
+    leadVideographer: 28000,
+    secondVideographer: 22000, // PKR 6,000 Tiered Discount on 2nd Videographer
+    leadPhotographer: 22000,
+    secondPhotographer: 16000, // PKR 6,000 Tiered Discount on 2nd Photographer
     drone: 12000,
     cinematicEdit: 0,
     rawBackup: 0,
@@ -88,11 +93,11 @@ export default function InteractiveEventConfigurator() {
       setDroneCoverage(false);
       setHardbookAlbum(false);
       setEventScale(null);
+      setIsMultiDay(false);
     } else if (type === "vip") {
-      // Unselect scale by default as requested
       setEventScale(null);
       setMascotsCount(1);
-      setVideographers(0);
+      setVideographers(1);
       setPhotographers(0);
       setDroneCoverage(false);
       setHardbookAlbum(false);
@@ -125,52 +130,69 @@ export default function InteractiveEventConfigurator() {
       case "mega":
         setMascotsCount(2);
         setVideographers(2);
-        setPhotographers(1);
+        setPhotographers(2);
         setDroneCoverage(true);
         break;
     }
   };
 
-  // --- PRICING CALCULATION ENGINE ---
+  // --- ADVANCED DYNAMIC PRICING ENGINE ---
   const pricing = useMemo(() => {
     if (!baseExperience) {
-      return { direct: 0, market: 0, savings: 0 };
+      return { direct: 0, market: 0, savings: 0, comboDiscount: 0 };
     }
 
     if (baseExperience === "solo") {
       const extraMascots = Math.max(0, mascotsCount - 1);
       const direct = DIRECT_RATES.soloBase + extraMascots * DIRECT_RATES.extraMascot;
       const market = MKT_RATES.soloBase + extraMascots * MKT_RATES.extraMascot;
-      return { direct, market, savings: Math.max(0, market - direct) };
+      return { direct, market, savings: Math.max(0, market - direct), comboDiscount: 0 };
     }
 
+    // 1. Extra Mascot Calculation
     const extraMascots = Math.max(0, mascotsCount - 1);
-    const directExtraMascotCost = extraMascots * DIRECT_RATES.extraMascot;
-    const mktExtraMascotCost = extraMascots * MKT_RATES.extraMascot;
+    const directMascot = DIRECT_RATES.vipBase + extraMascots * DIRECT_RATES.extraMascot;
+    const mktMascot = MKT_RATES.vipBase + extraMascots * MKT_RATES.extraMascot;
 
-    const directVideo = videographers * DIRECT_RATES.videographer;
+    // 2. Dynamic Videographer Calculation (Lead vs Secondary Rate)
+    let directVideo = 0;
+    if (videographers > 0) {
+      directVideo += DIRECT_RATES.leadVideographer; // 1st Cameraman
+      if (videographers > 1) {
+        directVideo += (videographers - 1) * DIRECT_RATES.secondVideographer; // Bulk Discounted 2nd+ Cameramen
+      }
+    }
     const mktVideo = videographers * MKT_RATES.videographer;
 
-    const directPhoto = photographers * DIRECT_RATES.photographer;
+    // 3. Dynamic Photographer Calculation (Lead vs Secondary Rate)
+    let directPhoto = 0;
+    if (photographers > 0) {
+      directPhoto += DIRECT_RATES.leadPhotographer; // 1st Photographer
+      if (photographers > 1) {
+        directPhoto += (photographers - 1) * DIRECT_RATES.secondPhotographer; // Bulk Discounted 2nd+ Photographers
+      }
+    }
     const mktPhoto = photographers * MKT_RATES.photographer;
 
+    // 4. Drone & Deliverables
     const directDrone = droneCoverage ? DIRECT_RATES.drone : 0;
     const mktDrone = droneCoverage ? MKT_RATES.drone : 0;
 
     const directAlbum = hardbookAlbum ? DIRECT_RATES.hardbook : 0;
     const mktAlbum = hardbookAlbum ? MKT_RATES.hardbook : 0;
 
-    const totalDirect =
-      DIRECT_RATES.vipBase +
-      directExtraMascotCost +
-      directVideo +
-      directPhoto +
-      directDrone +
-      directAlbum;
+    let totalDirect = directMascot + directVideo + directPhoto + directDrone + directAlbum;
+
+    // 5. Multi-Day Event / Full Crew Extra 10% Bundle Discount
+    let comboDiscount = 0;
+    const totalCrewCount = videographers + photographers;
+    if (totalCrewCount >= 3 || isMultiDay) {
+      comboDiscount = Math.round(totalDirect * 0.10); // 10% Smart Package Discount
+      totalDirect -= comboDiscount;
+    }
 
     const totalMarket =
-      MKT_RATES.vipBase +
-      mktExtraMascotCost +
+      mktMascot +
       mktVideo +
       mktPhoto +
       mktDrone +
@@ -181,9 +203,10 @@ export default function InteractiveEventConfigurator() {
     return {
       direct: totalDirect,
       market: totalMarket,
-      savings: Math.max(0, totalMarket - totalDirect)
+      savings: Math.max(0, totalMarket - totalDirect),
+      comboDiscount
     };
-  }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum]);
+  }, [baseExperience, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, isMultiDay]);
 
   const whatsappUrl = useMemo(() => {
     const phone = "923396224168";
@@ -191,6 +214,7 @@ export default function InteractiveEventConfigurator() {
 
 📅 *Event Date:* ${eventDate || "Not Specified"}
 📍 *City:* ${city}
+🎆 *Event Setup:* ${isMultiDay ? "Multi-Day Wedding Package" : "Single Day Event"}
 👥 *Guest Scale:* ${
       baseExperience === "solo"
         ? "Solo Gorilla Entrance"
@@ -206,7 +230,7 @@ export default function InteractiveEventConfigurator() {
     }
 🦍 *Mascots Fleet:* ${mascotsCount} Premium Gorilla(s)
 🎥 *Media Setup:* ${videographers} Videographer(s), ${photographers} Photographer(s), Drone: ${droneCoverage ? "Yes (4K Aerial)" : "No"}
-📖 *Hardbook Album:* ${hardbookAlbum ? "Yes (+PKR 15,000)" : "No"}
+📖 *Hardbook Album:* ${hardbookAlbum ? "Yes" : "No"}
 🎁 *Bonus Included:* Full Cinematic Edited Reel (100% FREE Gift)
 
 💰 *Direct Total Estimate:* PKR ${pricing.direct.toLocaleString()} (Saved: PKR ${pricing.savings.toLocaleString()}+)
@@ -214,7 +238,7 @@ export default function InteractiveEventConfigurator() {
 Please confirm date lock & deposit instructions!`;
 
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-  }, [eventDate, city, baseExperience, eventScale, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, pricing]);
+  }, [eventDate, city, baseExperience, eventScale, mascotsCount, videographers, photographers, droneCoverage, hardbookAlbum, isMultiDay, pricing]);
 
   return (
     <section 
@@ -230,13 +254,13 @@ Please confirm date lock & deposit instructions!`;
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold tracking-wide uppercase shadow-inner">
             <Sparkles className="w-4 h-4 text-emerald-400 animate-pulse" />
-            Live Event Configurator & Instant Price Engine
+            Live Event Configurator & Smart Discount Engine
           </div>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
             Design Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-500">Unforgettable Event</span>
           </h2>
           <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
-            Customize your mascot show, cinema-grade media crew, and deliverables in real time with 100% transparent pricing and direct savings guarantee.
+            Customize your mascot show, cinema-grade media crew, and deliverables in real time with dynamic bulk discounts and direct price guarantees.
           </p>
         </div>
 
@@ -398,7 +422,7 @@ Please confirm date lock & deposit instructions!`;
                       {eventScale === "intimate" && "Ideal for intimate birthdays! 1 Gorilla + 1 Media Crew works best."}
                       {eventScale === "medium" && "1 Gorilla + 1 Videographer + 1 Photographer recommended."}
                       {eventScale === "large" && "1 Gorilla + Full Media Crew + Drone Aerial Coverage recommended."}
-                      {eventScale === "mega" && "🔥 2 Gorillas Fleet + 3-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
+                      {eventScale === "mega" && "🔥 2 Gorillas Fleet + 4-Person Media Crew + Drone Aerial Shot recommended for maximum stage impact!"}
                     </div>
                   </motion.div>
                 )}
@@ -424,7 +448,7 @@ Please confirm date lock & deposit instructions!`;
                       <Users className="w-4 h-4 text-emerald-400" />
                       Mascots Fleet Units
                     </div>
-                    <p className="text-xs text-slate-400">PKR 18,000 per extra mascot unit</p>
+                    <p className="text-xs text-slate-400">1st Mascot Included in Base. Extra Mascot: PKR 18,000</p>
                   </div>
                   <div className="flex items-center gap-3 self-end sm:self-auto">
                     <button
@@ -455,7 +479,7 @@ Please confirm date lock & deposit instructions!`;
                     </div>
                     <div className="text-xs space-x-2 mt-0.5">
                       <span className="text-slate-500 line-through">Market: PKR 35,000</span>
-                      <span className="text-emerald-400 font-semibold">Direct: PKR 28,000</span>
+                      <span className="text-emerald-400 font-semibold">1st Lead: 28k | 2nd+ Unit: 22k</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -487,7 +511,7 @@ Please confirm date lock & deposit instructions!`;
                     </div>
                     <div className="text-xs space-x-2 mt-0.5">
                       <span className="text-slate-500 line-through">Market: PKR 28,000</span>
-                      <span className="text-emerald-400 font-semibold">Direct: PKR 22,000</span>
+                      <span className="text-emerald-400 font-semibold">1st Lead: 22k | 2nd+ Unit: 16k</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 self-end sm:self-auto">
@@ -556,6 +580,30 @@ Please confirm date lock & deposit instructions!`;
                     <span
                       className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
                         hardbookAlbum ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Multi-Day Multi-Crew Bundle Toggle */}
+                <div className="pt-4 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="font-bold text-sm sm:text-base text-amber-300 flex items-center gap-2">
+                      <Tag className="w-4 h-4 text-amber-400" />
+                      Multi-Day / Full Wedding Package Discount
+                    </div>
+                    <p className="text-xs text-slate-400">Auto-applies extra 10% combo discount on full crew setup</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsMultiDay((prev) => !prev)}
+                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                      isMultiDay ? "bg-amber-500" : "bg-slate-800"
+                    }`}
+                  >
+                    <span
+                      className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out ${
+                        isMultiDay ? "translate-x-5" : "translate-x-0"
                       }`}
                     />
                   </button>
@@ -630,6 +678,11 @@ Please confirm date lock & deposit instructions!`;
               <div className="text-2xl sm:text-3xl font-black text-amber-300">
                 PKR {pricing.savings.toLocaleString()}+
               </div>
+              {pricing.comboDiscount > 0 && (
+                <div className="text-xs text-emerald-400 font-bold animate-pulse pt-1">
+                  🔥 Includes PKR {pricing.comboDiscount.toLocaleString()} Multi-Crew Volume Discount!
+                </div>
+              )}
             </div>
 
             <div className="space-y-3 py-2">
@@ -651,11 +704,9 @@ Please confirm date lock & deposit instructions!`;
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`w-full py-4 px-6 rounded-xl font-black text-slate-950 text-base sm:text-lg bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 hover:from-emerald-300 hover:to-teal-200 transition-all duration-300 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-3 ${
-                !baseExperience ? "opacity-50 pointer-events-none" : ""
-              }`}
+              className="w-full inline-flex items-center justify-center gap-2 py-4 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-base sm:text-lg hover:from-emerald-400 hover:to-teal-400 transition-all duration-300 shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
             >
-              <span>Confirm & Lock Date via WhatsApp</span>
+              Confirm & Lock Date via WhatsApp
             </a>
           </div>
         </div>
@@ -663,4 +714,5 @@ Please confirm date lock & deposit instructions!`;
     </section>
   );
 }
+
 export { InteractiveEventConfigurator as ServicePackages };
